@@ -3,25 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hubli Quest | Travel Companion</title>
+    <title>Travel Quest | Full Itinerary</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
+            font-family: 'Inter', sans-serif; 
             background-color: #020617; 
             color: #f8fafc; 
             -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
         }
 
         .glass-card {
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .city-gradient {
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .check-btn {
@@ -31,36 +36,31 @@
         .check-btn.active {
             background-color: #22c55e;
             color: white;
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+            border-color: #22c55e;
         }
 
         .check-btn.inactive {
             background-color: rgba(30, 41, 59, 0.6);
             color: rgba(148, 163, 184, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(12px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-slide-up {
-            animation: slideUp 0.4s ease forwards;
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease forwards;
         }
 
-        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
-<body class="pb-36">
+<body class="pb-32">
 
     <div id="root"></div>
 
@@ -74,245 +74,255 @@
         const TRAVEL_DATA = [
             {
                 city: "Agra",
-                transit: "Bus / Auto",
                 spots: [
-                    { id: "ag1", name: "Taj Mahal", lat: 27.1751, lng: 78.0421, desc: "A world-famous white marble mausoleum built by Shah Jahan in memory of his beloved wife. It is a masterpiece of Mughal architecture and a UNESCO World Heritage site." },
-                    { id: "ag2", name: "Agra Fort", lat: 27.1795, lng: 78.0211, desc: "A historic red sandstone fortress that served as the primary residence of the Mughal emperors until 1638. It contains various palaces like the Jahangir Palace and Moti Masjid." },
-                    { id: "ag3", name: "Itmad-ud-Daulah (Baby Taj)", lat: 27.1929, lng: 78.0311, desc: "Often referred to as the 'Baby Taj', this tomb is the first Mughal structure built entirely of marble. It features delicate stone inlay work and is located on the bank of the Yamuna." },
-                    { id: "ag4", name: "Jama Masjid Agra", lat: 27.1858, lng: 78.0163, desc: "A grand 17th-century mosque built by Shah Jahan's daughter, Jahanara Begum. It is known for its red sandstone structure and beautiful marble domes." },
-                    { id: "ag5", name: "Mehtab Bagh", lat: 27.1788, lng: 78.0423, desc: "The Moonlight Garden situated on the opposite bank of the Yamuna, offering a spectacular view of the Taj Mahal. It is a classic Mughal Charbagh design." }
+                    { name: "Taj Mahal", lat: 27.1751, lng: 78.0421, desc: "A world-famous white marble mausoleum built by Shah Jahan in memory of his beloved wife. It is a masterpiece of Mughal architecture and a UNESCO site." },
+                    { name: "Agra Fort", lat: 27.1795, lng: 78.0211, desc: "A massive 16th-century red sandstone fortress that served as the main residence of the Mughal emperors. It contains palaces like the Khas Mahal." },
+                    { name: "Itmad-ud-Daulah (Baby Taj)", lat: 27.1929, lng: 78.0311, desc: "Often referred to as the 'Baby Taj', this tomb is the first Mughal structure built entirely of marble. It features delicate stone inlay work." },
+                    { name: "Jama Masjid", lat: 27.1858, lng: 78.0163, desc: "A grand 17th-century mosque built by Shah Jahan's daughter, Jahanara Begum. It is known for its red sandstone structure and marble domes." },
+                    { name: "Moti Masjid", lat: 27.1800, lng: 78.0220, desc: "The 'Pearl Mosque' located within Agra Fort, known for its pristine white marble architecture. It was commissioned by Shah Jahan for the royal court." },
+                    { name: "Mehtab Bagh", lat: 27.1788, lng: 78.0423, desc: "The Moonlight Garden situated on the opposite bank of the Yamuna, offering a spectacular view of the Taj Mahal. It was a classic Mughal royal garden." },
+                    { name: "Ram Bagh", lat: 27.2000, lng: 78.0400, desc: "The oldest Mughal garden in India, originally established by Emperor Babur in 1528. It follows the traditional Charbagh layout with water channels." }
                 ]
             },
             {
                 city: "Lucknow",
-                transit: "Metro / Bus",
                 spots: [
-                    { id: "lk1", name: "Bara Imambara & Bhulbhulaiya", lat: 26.8689, lng: 80.9135, desc: "A grand assembly hall with a massive vaulted chamber built without beams. It houses the famous Bhulbhulaiya, a complex labyrinth of corridors." },
-                    { id: "lk2", name: "Chhota Imambara", lat: 26.8770, lng: 80.9048, desc: "Also known as the Palace of Lights, famous for its crystal chandeliers and silver throne. It was built by Muhammad Ali Shah and features exquisite calligraphy." },
-                    { id: "lk3", name: "Rumi Darwaza", lat: 26.8684, lng: 80.9122, desc: "An imposing 60-foot gateway modeled after the Sublime Porte in Istanbul. It stands as a signature landmark and entry point to Old Lucknow." },
-                    { id: "lk4", name: "Dargah Dada Miyan", lat: 26.8521, lng: 80.9322, desc: "A highly revered Sufi shrine of Hazrat Shah Meena Shah, located in the old city. It attracts devotees seeking spiritual peace and blessings." },
-                    { id: "lk5", name: "Ambedkar Memorial Park", lat: 26.8454, lng: 80.9785, desc: "A massive public memorial park built entirely of red sandstone from Rajasthan. It features sprawling lawns, elephant statues, and a grand memorial stupa." }
+                    { name: "Bara Imambara", lat: 26.8689, lng: 80.9135, desc: "A grand assembly hall with a massive vaulted chamber built without any beams. It houses the world-famous Bhulbhulaiya stone labyrinth." },
+                    { name: "Chhota Imambara", lat: 26.8770, lng: 80.9048, desc: "Also known as the Palace of Lights, famous for its intricate chandeliers and silver throne. It features exquisite Nawabi calligraphy on its facade." },
+                    { name: "Rumi Darwaza", lat: 26.8684, lng: 80.9122, desc: "An imposing gateway that is a signature landmark of Lucknow, modeled after the Sublime Porte in Istanbul. It stands sixty feet tall and is a city icon." },
+                    { name: "The Residency", lat: 26.8631, lng: 80.9272, desc: "A group of ruins that served as the residence for the British Resident General. It played a major role in the 1857 uprising and is now a historical park." },
+                    { name: "Ambedkar Memorial Park", lat: 26.8454, lng: 80.9785, desc: "A massive public memorial park built entirely of red sandstone from Rajasthan. It features sprawling lawns, elephant statues, and a grand memorial stupa." },
+                    { name: "Janeshwar Mishra Park", lat: 26.8400, lng: 81.0000, desc: "An eco-friendly park claimed to be Asia's largest, featuring long jogging tracks and man-made lakes. It serves as a vast green lung for the city." },
+                    { name: "Dargah Dada Miyan", lat: 26.8521, lng: 80.9322, desc: "A highly revered Sufi shrine of Hazrat Shah Meena Shah, located in the old city. It attracts devotees from all walks of life seeking spiritual peace." },
+                    { name: "Shah Mina Shah Mazar", lat: 26.8500, lng: 80.9300, desc: "The final resting place of the 15th-century Sufi saint, regarded as the patron saint of Lucknow. The shrine is a center for communal harmony." }
                 ]
             },
             {
                 city: "Bahraich",
-                transit: "Bus / Auto",
                 spots: [
-                    { id: "ba1", name: "Dargah Syed Salar Masood Ghazi", lat: 27.5855, lng: 81.6033, desc: "An ancient shrine of the 11th-century warrior saint, visited by thousands during the Jeth Mela. It is a powerful symbol of faith and sinkretisme in the region." }
+                    { name: "Dargah Syed Salar Masood Ghazi", lat: 27.5855, lng: 81.6033, desc: "An ancient shrine of the 11th-century warrior saint, visited by thousands during the annual Jeth Mela. It is a symbol of faith in North India." },
+                    { name: "Maneejri Masjid", lat: 27.5700, lng: 81.5900, desc: "A local historical mosque known for its traditional architecture and community importance. It serves as a spiritual hub for the residents of Bahraich." },
+                    { name: "Jama Masjid Bahraich", lat: 27.5750, lng: 81.6000, desc: "The central congregational mosque of the city, featuring classic minarets and domes. It is the primary site for Friday prayers and festivals." }
                 ]
             },
             {
                 city: "Kanpur / Makanpur",
-                transit: "Bus / Train",
                 spots: [
-                    { id: "ka1", name: "Dargah Zinda Shah Madar", lat: 26.8373, lng: 80.0465, desc: "A world-renowned shrine of the founder of the Madariyya Sufi order in Makanpur. It is one of the oldest and most prominent Sufi centers in India." },
-                    { id: "ka2", name: "JK Temple", lat: 26.4754, lng: 80.3060, desc: "A stunning white marble temple dedicated to Lord Radhakrishna, blending ancient and modern styles. It is surrounded by beautifully manicured gardens." }
+                    { name: "Dargah Zinda Shah Madar", lat: 26.8373, lng: 80.0465, desc: "A world-renowned shrine of the founder of the Madariyya Sufi order in Makanpur. It is one of the oldest and most prominent Sufi centers in India." },
+                    { name: "Kanpur Memorial Church", lat: 26.4500, lng: 80.3600, desc: "Built in 1875 in Gothic Revival style to honor the British lost during the 1857 siege. It features beautiful stained glass and brickwork." },
+                    { name: "JK Temple", lat: 26.4754, lng: 80.3060, desc: "A stunning white marble temple dedicated to Lord Radhakrishna, blending ancient and modern styles. It is a major landmark in Kanpur." },
+                    { name: "Allen Forest Zoo", lat: 26.5050, lng: 80.3000, desc: "One of the few zoos in India created in a natural forest, providing a large habitat for animals. It is a major recreational spot in the city." },
+                    { name: "Nana Rao Park", lat: 26.4700, lng: 80.3500, desc: "A historic park built on the site of the 1857 Bibighar incident, now dedicated to Nana Sahib. It serves as a peaceful city park with statues." }
+                ]
+            },
+            {
+                city: "Kichocha (Akbarpur)",
+                spots: [
+                    { name: "Dargah Makhdoom Ashraf Semnani", lat: 26.4258, lng: 82.7569, desc: "A world-famous Sufi shrine known for its spiritual healing and tranquility. The holy water from the adjacent pond is believed to possess curative properties." }
                 ]
             },
             {
                 city: "Bareilly",
-                transit: "Bus / Auto",
                 spots: [
-                    { id: "br1", name: "Dargah-e-Ala Hazrat", lat: 28.3751, lng: 79.4144, desc: "The shrine of Imam Ahmed Raza Khan, a world-famous Islamic jurist and scholar. It is a global center for the Barelvi movement and Islamic learning." }
+                    { name: "Dargah-e-Ala Hazrat", lat: 28.3751, lng: 79.4144, desc: "The shrine of Imam Ahmed Raza Khan, a world-renowned Islamic jurist and scholar. It is a global center for Islamic learning and research." },
+                    { name: "Dargah Shah Sharafat Ali Mia", lat: 28.3600, lng: 79.4200, desc: "A prominent Sufi shrine dedicated to Shah Sharafat Ali, noted for its aesthetic beauty. It is a site of deep spiritual significance for the community." },
+                    { name: "Phool Bagh", lat: 28.3700, lng: 79.4100, desc: "A well-maintained public garden in Bareilly offering a peaceful environment for recreation. It features variety of flora and is popular for walks." },
+                    { name: "Akshar Vihar", lat: 28.3500, lng: 79.4300, desc: "A recreational park centered around a large lake, popular for boating and family outings. It is one of the major green spaces for city residents." }
+                ]
+            },
+            {
+                city: "Haridwar / Roorkee",
+                spots: [
+                    { name: "Piran Kaliyar Sharif", lat: 29.9161, lng: 77.9351, desc: "The 13th-century shrine of Alauddin Ali Ahmed Sabir Kaliyari near Roorkee. One of the most sacred Sufi sites in India, famous for its spiritual aura." },
+                    { name: "Har Ki Pauri", lat: 29.9564, lng: 78.1707, desc: "The most famous ghat on the banks of the Ganges where the evening Aarti is performed. It is believed to be where the river enters the plains." }
+                ]
+            },
+            {
+                city: "Sadhaura (near Ambala)",
+                spots: [
+                    { name: "Dargah of Shah Qumais", lat: 30.3792, lng: 77.2025, desc: "A historic Sufi shrine in Sadhaura belonging to the Qadiriya order. It is an important spiritual landmark for the Gumaisia region in Haryana." }
+                ]
+            },
+            {
+                city: "Panipat",
+                spots: [
+                    { name: "Kala Amb", lat: 29.4000, lng: 76.9900, desc: "A memorial site marking the spot where the 3rd Battle of Panipat took place in 1761. It serves as a tribute to the brave Maratha warriors." },
+                    { name: "Panipat Museum", lat: 29.3950, lng: 76.9800, desc: "A museum dedicated to the history of the three legendary battles of Panipat. It displays artifacts, weapons, and maps that showcase military past." },
+                    { name: "Dargah Bu Ali Shah Qalandar", lat: 29.3909, lng: 76.9744, desc: "The shrine of the 13th-century Sufi saint from Azerbaijan who settled in Panipat. It is a center of spirituality and attracts visitors of all faiths." },
+                    { name: "Ibrahim Lodhi’s Tomb", lat: 29.3920, lng: 76.9750, desc: "The final resting place of the last Sultan of the Lodi dynasty, killed in the 1st Battle of Panipat. It is a simple structure on a high platform." }
                 ]
             },
             {
                 city: "Delhi",
-                transit: "Metro / Bus / Train",
                 spots: [
-                    { id: "de1", name: "Dargah Hazrat Qutubuddin Bakhtiyar Kaki", lat: 28.5220, lng: 77.1840, desc: "The oldest Sufi shrine in Delhi, dedicated to the spiritual successor of Khwaja Moinuddin Chishti. Located in Mehrauli, it is a site of immense spiritual peace." },
-                    { id: "de2", name: "Hazrat Khwaja Nasiruddin Mahmood Chirag-Dehlavi Dargah", lat: 28.5410, lng: 77.2380, desc: "The resting place of the 14th-century saint known as the 'Lamp of Delhi'. This shrine is a highly revered historical sanctuary in South Delhi." },
-                    { id: "de3", name: "Red Fort", lat: 28.6562, lng: 77.2410, desc: "A UNESCO site and the primary residence of Mughal emperors for 200 years. It stands as a grand symbol of India's historical power and independence." },
-                    { id: "de4", name: "Nizamuddin Dargah", lat: 28.5913, lng: 77.2425, desc: "The sacred shrine of the world-renowned Sufi saint Hazrat Nizamuddin Auliya. It is legendary for its soulful evening Qawwali performances." }
+                    { name: "Dargah Hazrat Qutubuddin Bakhtiyar Kaki", lat: 28.5220, lng: 77.1840, desc: "The oldest Sufi shrine in Delhi dedicated to the successor of Khwaja Moinuddin Chishti. Located in Mehrauli, it is a site of immense spiritual peace." },
+                    { name: "Dargah Hazrat Khwaja Nasiruddin Mahmood Chirag-Dehlavi", lat: 28.5410, lng: 77.2380, desc: "The resting place of the 14th-century saint known as the 'Lamp of Delhi'. This shrine is a highly revered historical sanctuary in South Delhi." },
+                    { name: "Red Fort", lat: 28.6562, lng: 77.2410, desc: "A UNESCO World Heritage site and the primary residence of the Mughal emperors for 200 years. It is a symbol of India's independence and power." },
+                    { name: "Humayun’s Tomb", lat: 28.5933, lng: 77.2507, desc: "The first garden-tomb on the Indian subcontinent, built in 1570 for the Mughal Emperor. It served as the architectural inspiration for the Taj Mahal." },
+                    { name: "Qutub Minar", lat: 28.5244, lng: 77.1855, desc: "The tallest brick minaret in the world, built in 1193 by Qutb-ud-din Aibak. The complex also houses an ancient Iron Pillar and various ruins." },
+                    { name: "Jama Masjid Delhi", lat: 28.6507, lng: 77.2334, desc: "One of the largest mosques in India, built by Emperor Shah Jahan in the heart of Old Delhi. It can accommodate over 25,000 devotees." },
+                    { name: "Nizamuddin Dargah", lat: 28.5913, lng: 77.2425, desc: "The shrine of the world-renowned Sufi saint Nizamuddin Auliya. It is famous for its soulful evening Qawwali sessions and spiritual atmosphere." },
+                    { name: "Lotus Temple", lat: 28.5535, lng: 77.2588, desc: "A Bahá'í House of Worship notable for its flowerlike lotus shape. It is a site of silent prayer and meditation open to people of all religions." },
+                    { name: "Lodhi Gardens", lat: 28.5931, lng: 77.2197, desc: "A vast city park containing the tombs of 15th-century Lodhi and Sayyid rulers. It is a popular spot for walkers and history enthusiasts." },
+                    { name: "Garden of Five Senses", lat: 28.5100, lng: 77.2000, desc: "A uniquely designed park in Saket meant to stimulate all five human senses. It features murals, sculptures, and various themed gardens." }
                 ]
             },
             {
                 city: "Ajmer",
-                transit: "Bus / Train",
                 spots: [
-                    { id: "aj1", name: "Ajmer Sharif Dargah", lat: 26.4561, lng: 74.6284, desc: "The holy shrine of Khwaja Moinuddin Chishti, 'Gharib Nawaz'. It is one of the most significant pilgrimage destinations in the world." },
-                    { id: "aj2", name: "Adhai Din Ka Jhopda", lat: 26.4552, lng: 74.6251, desc: "An early Indo-Islamic mosque commissioned by Qutb-ud-din Aibak and built in just 2.5 days. It features unique carved pillars and arches." },
-                    { id: "aj3", name: "Ana Sagar Lake", lat: 26.4741, lng: 74.6258, desc: "A beautiful artificial lake built in the 12th century, famous for its marble pavilions (Baradari). It is a popular spot for evening walks and sunsets." }
+                    { name: "Ajmer Sharif Dargah", lat: 26.4561, lng: 74.6284, desc: "The holy shrine of Khwaja Moinuddin Chishti, the founder of the Chishtiya Sufi order. One of the most sacred pilgrimage sites in India." },
+                    { name: "Taragarh Fort", lat: 26.4468, lng: 74.6189, desc: "A historic fort built on a steep hill, offering panoramic views of Ajmer city. It was one of the oldest hill forts in India and a military outpost." },
+                    { name: "Adhai Din Ka Jhopda", lat: 26.4552, lng: 74.6251, desc: "An early Indo-Islamic mosque reportedly built in just two and a half days. It features a stunning screen of arches and intricately carved pillars." },
+                    { name: "Ana Sagar Lake", lat: 26.4741, lng: 74.6258, desc: "A large artificial lake built in the 12th century, famous for its marble pavilions. It is a popular spot for evening walks and enjoying sunsets." },
+                    { name: "Daulat Bagh gardens", lat: 26.4750, lng: 74.6260, desc: "A beautiful garden adjacent to Ana Sagar Lake, built by Emperor Jahangir. It features marble pavilions and lush greenery for lakeside relaxation." }
+                ]
+            },
+            {
+                city: "Salwar Sharif",
+                spots: [
+                    { name: "Dargah of Khwaja Fakhruddin Chishti", lat: 26.5500, lng: 74.8000, desc: "The shrine of the eldest son of Khwaja Moinuddin Chishti, located in Salwar. It is a significant Sufi site within the Chishtiya tradition." }
                 ]
             },
             {
                 city: "Pushkar",
-                transit: "Bus / Auto",
                 spots: [
-                    { id: "pu1", name: "Brahma Temple", lat: 26.4900, lng: 74.5500, desc: "One of the very few dedicated temples in the world for Lord Brahma, the creator. It is a major spiritual destination for pilgrims visiting Pushkar." },
-                    { id: "pu2", name: "Pushkar Lake Ghats", lat: 26.4883, lng: 74.5518, desc: "A sacred lake with 52 holy bathing ghats where devotees take a ritual dip. It is the religious heart of the town and host to the famous fair." }
+                    { name: "Brahma Temple", lat: 26.4900, lng: 74.5500, desc: "One of the very few dedicated temples in the world for Lord Brahma. It is a major site for pilgrims visiting the holy town of Pushkar." },
+                    { name: "Pushkar Lake Ghats", lat: 26.4883, lng: 74.5518, desc: "A sacred lake surrounded by 52 bathing ghats where devotees take a holy dip. It is the heart of the town's religious life." }
                 ]
             }
         ];
 
-        const SpotCard = ({ spot, city, visited, toggleVisit, userLoc, isTracking }) => {
-            const [expanded, setExpanded] = useState(false);
-
-            const dist = useMemo(() => {
-                if (!userLoc || !isTracking) return null;
-                const R = 6371;
-                const dLat = (spot.lat - userLoc.lat) * Math.PI / 180;
-                const dLon = (spot.lng - userLoc.lng) * Math.PI / 180;
-                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(userLoc.lat * Math.PI / 180) * Math.cos(spot.lat * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                const d = R * c;
-                return d < 1 ? `${Math.round(d * 1000)}m` : `${d.toFixed(1)}km`;
-            }, [userLoc, isTracking, spot]);
-
-            const isVisited = visited.includes(spot.id);
-
-            return (
-                <div className={`glass-card p-4 rounded-[28px] flex gap-4 items-start ${isVisited ? 'opacity-40 grayscale-[0.5]' : ''}`}>
-                    {/* Left: Distance + Check */}
-                    <div className="flex flex-col items-center gap-1 shrink-0 w-12 pt-1">
-                        <span className={`text-[9px] font-black uppercase tracking-tight text-center leading-none h-4 ${isTracking ? 'text-indigo-400' : 'text-slate-600'}`}>
-                            {isTracking ? (dist || "calc...") : "Offline"}
-                        </span>
-                        <button 
-                            onClick={() => toggleVisit(spot.id)}
-                            className={`check-btn w-11 h-11 rounded-2xl flex items-center justify-center text-lg ${isVisited ? 'active' : 'inactive'}`}
-                        >
-                            <i className={`fas ${isVisited ? 'fa-check' : 'fa-circle-plus opacity-20'}`}></i>
-                        </button>
-                    </div>
-
-                    {/* Middle: Content */}
-                    <div className="flex-1">
-                        <h4 className="text-[15px] font-bold text-white leading-snug mb-1">
-                            {spot.name}
-                        </h4>
-                        <p className={`text-[11px] text-slate-400 leading-relaxed transition-all ${expanded ? '' : 'line-clamp-2'}`}>
-                            {spot.desc}
-                        </p>
-                        <button 
-                            onClick={() => setExpanded(!expanded)}
-                            className="text-[10px] font-bold text-indigo-400 mt-1 uppercase tracking-wider"
-                        >
-                            {expanded ? "Show Less" : "Show More"}
-                        </button>
-                    </div>
-
-                    {/* Right: Actions */}
-                    <div className="flex flex-col gap-2 shrink-0">
-                        <a 
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`}
-                            target="_blank"
-                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-indigo-400 transition-colors"
-                        >
-                            <i className="fa-solid fa-diamond-turn-right text-xs"></i>
-                        </a>
-                        <a 
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=transit`}
-                            target="_blank"
-                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/20"
-                        >
-                            <i className="fa-solid fa-bus text-xs"></i>
-                        </a>
-                    </div>
-                </div>
-            );
-        };
-
         function App() {
-            const [visited, setVisited] = useState(() => JSON.parse(localStorage.getItem('hq_final_v5') || '[]'));
+            const [visited, setVisited] = useState(() => JSON.parse(localStorage.getItem('visited_v7') || '[]'));
             const [userLoc, setUserLoc] = useState(null);
             const [isTracking, setIsTracking] = useState(false);
             const [search, setSearch] = useState("");
 
             useEffect(() => {
-                localStorage.setItem('hq_final_v5', JSON.stringify(visited));
+                localStorage.setItem('visited_v7', JSON.stringify(visited));
             }, [visited]);
+
+            const calculateDist = (lat1, lon1, lat2, lon2) => {
+                const R = 6371;
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            };
 
             const toggleGPS = () => {
                 if (isTracking) { setIsTracking(false); setUserLoc(null); return; }
                 navigator.geolocation.getCurrentPosition((pos) => {
                     setUserLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude });
                     setIsTracking(true);
-                    navigator.geolocation.watchPosition(p => setUserLoc({ lat: p.coords.latitude, lng: p.coords.longitude }));
-                }, () => alert("GPS Error: Please enable location services in your phone settings."), { enableHighAccuracy: true });
-            };
-
-            const toggleVisit = (id) => {
-                setVisited(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+                    navigator.geolocation.watchPosition(p => setUserLoc({ lat: p.coords.latitude, lng: p.coords.longitude }), null, {enableHighAccuracy: true});
+                }, () => alert("Enable GPS in settings"), { enableHighAccuracy: true });
             };
 
             const filtered = TRAVEL_DATA.map(g => ({
                 ...g, spots: g.spots.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || g.city.toLowerCase().includes(search.toLowerCase()))
             })).filter(g => g.spots.length > 0);
 
-            const total = TRAVEL_DATA.reduce((acc, c) => acc + c.spots.length, 0);
-
             return (
-                <div className="min-h-screen px-4 pt-4 max-w-xl mx-auto">
-                    {/* Header */}
-                    <header className="flex justify-between items-center py-5 sticky top-0 bg-[#020617]/95 backdrop-blur-md z-50">
+                <div className="min-h-screen max-w-2xl mx-auto p-4 space-y-6">
+                    <header className="flex justify-between items-center py-6 sticky top-0 bg-[#020617] z-50">
                         <div>
-                            <h1 className="text-2xl font-black tracking-tighter text-white italic uppercase">Hubli Quest</h1>
-                            <p className="text-[10px] font-bold text-slate-500 tracking-[0.2em]">{visited.length} / {total} COMPLETED</p>
+                            <h1 className="text-3xl font-black tracking-tight text-white uppercase italic">Hubli Quest</h1>
+                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+                                Progress: {visited.length} / {TRAVEL_DATA.reduce((acc,g)=>acc+g.spots.length, 0)} • {Math.round((visited.length / TRAVEL_DATA.reduce((acc,g)=>acc+g.spots.length, 0)) * 100)}%
+                            </div>
                         </div>
                         <button 
-                            onClick={toggleGPS} 
-                            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isTracking ? 'bg-indigo-600 shadow-lg shadow-indigo-500/30' : 'bg-slate-800 border border-slate-700'}`}
+                            onClick={toggleGPS}
+                            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${isTracking ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}
                         >
-                            <i className={`fas ${isTracking ? 'fa-satellite animate-pulse text-white' : 'fa-location-dot text-slate-500'} text-xl`}></i>
+                            <i className={`fas ${isTracking ? 'fa-satellite animate-pulse' : 'fa-location-dot'} text-xl`}></i>
                         </button>
                     </header>
 
-                    {/* Search */}
-                    <div className="relative mb-10">
-                        <i className="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-600"></i>
+                    <div className="relative">
+                        <i className="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-500"></i>
                         <input 
                             value={search} onChange={e=>setSearch(e.target.value)}
-                            placeholder="Find city or shrine..." 
-                            className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl py-4 pl-12 pr-6 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all"
+                            placeholder="Find a city or landmark..." 
+                            className="w-full bg-slate-900/50 border border-slate-800 rounded-3xl py-5 pl-14 pr-6 text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500/30 placeholder:text-slate-600"
                         />
                     </div>
 
-                    {/* Groups */}
                     <main className="space-y-12">
                         {filtered.map((group, idx) => (
-                            <div key={group.city} className="animate-slide-up" style={{animationDelay: `${idx*0.05}s`}}>
-                                <div className="flex items-center gap-3 mb-5 px-1">
-                                    <h2 className="text-[11px] font-black text-indigo-400 uppercase tracking-[0.3em]">{group.city}</h2>
-                                    <div className="h-px flex-1 bg-slate-800"></div>
-                                    <span className="text-[8px] font-bold text-slate-500 border border-slate-800 px-2 py-0.5 rounded-md uppercase">{group.transit}</span>
+                            <section key={group.city} className="space-y-6 animate-fade-in" style={{ animationDelay: `${idx * 0.05}s` }}>
+                                <div className="flex items-center gap-4">
+                                    <h2 className="city-gradient font-black text-xs uppercase tracking-[0.3em] whitespace-nowrap">{group.city}</h2>
+                                    <div className="h-px w-full bg-slate-800"></div>
                                 </div>
+                                
                                 <div className="grid gap-4">
-                                    {group.spots.map(spot => (
-                                        <SpotCard 
-                                            key={spot.id} 
-                                            spot={spot} 
-                                            city={group.city}
-                                            visited={visited}
-                                            toggleVisit={toggleVisit}
-                                            userLoc={userLoc}
-                                            isTracking={isTracking}
-                                        />
-                                    ))}
+                                    {group.spots.map((spot) => {
+                                        const isVisited = visited.includes(spot.name);
+                                        const dist = userLoc ? calculateDist(userLoc.lat, userLoc.lng, spot.lat, spot.lng) : null;
+                                        return (
+                                            <div key={spot.name} className={`glass-card p-6 rounded-[32px] flex items-center gap-5 transition-all duration-500 ${isVisited ? 'opacity-40 grayscale-[0.3]' : ''}`}>
+                                                <button 
+                                                    onClick={() => setVisited(v => v.includes(spot.name) ? v.filter(n=>n!==spot.name) : [...v, spot.name])}
+                                                    className={`check-btn shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-xl border-2 ${isVisited ? 'active border-green-500' : 'inactive border-slate-700'}`}
+                                                >
+                                                    <i className={`fas ${isVisited ? 'fa-check' : 'fa-plus opacity-30'}`}></i>
+                                                </button>
+
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex flex-wrap items-center gap-3 mb-1">
+                                                        <h4 className={`text-lg font-bold tracking-tight ${isVisited ? 'text-slate-500 line-through' : 'text-slate-100'}`}>
+                                                            {spot.name}
+                                                        </h4>
+                                                        {isTracking && dist !== null && (
+                                                            <span className="text-[10px] font-black bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-lg uppercase tracking-wider">
+                                                                {dist < 1 ? `${Math.round(dist * 1000)}m` : `${dist.toFixed(1)}km`}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-[12px] text-slate-400 leading-relaxed italic opacity-80">
+                                                        {spot.desc}
+                                                    </p>
+                                                </div>
+
+                                                <div className="flex flex-col gap-3 shrink-0">
+                                                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`} target="_blank" className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800 border border-slate-700 text-slate-400">
+                                                        <i className="fa-solid fa-diamond-turn-right text-sm"></i>
+                                                    </a>
+                                                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=transit`} target="_blank" className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400">
+                                                        <i className="fa-solid fa-train-subway text-xs"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                            </div>
+                            </section>
                         ))}
                     </main>
 
-                    {/* Navigation */}
-                    <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-slate-900/90 backdrop-blur-xl border border-white/5 py-4 px-10 rounded-[35px] flex justify-between shadow-[0_25px_50px_-12px_rgba(0,0,0,1)] z-50">
-                        <button onClick={()=>window.scrollTo({top:0, behavior:'smooth'})} className="flex flex-col items-center gap-1.5 text-indigo-500">
-                            <i className="fas fa-compass text-xl"></i>
-                            <span className="text-[8px] font-bold uppercase tracking-widest">Guide</span>
+                    <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-slate-900/95 backdrop-blur-2xl border border-white/5 py-5 px-10 rounded-[35px] flex justify-between shadow-2xl z-50">
+                        <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex flex-col items-center gap-1.5 text-indigo-500">
+                            <i className="fas fa-home text-xl"></i>
+                            <span className="text-[9px] font-bold uppercase tracking-widest">Guide</span>
                         </button>
                         <button 
                             onClick={() => {
-                                const next = TRAVEL_DATA.flatMap(g=>g.spots).find(s=>!visited.includes(s.id));
-                                if(next) setSearch(next.name);
+                                const next = TRAVEL_DATA.flatMap(g => g.spots).find(s => !visited.includes(s.name));
+                                if (next) setSearch(next.name);
                             }}
                             className="flex flex-col items-center gap-1.5 text-slate-500"
                         >
-                            <i className="fas fa-map-pin text-xl"></i>
-                            <span className="text-[8px] font-bold uppercase tracking-widest">Next</span>
+                            <i className="fas fa-search text-xl"></i>
+                            <span className="text-[9px] font-bold uppercase tracking-widest">Locate</span>
                         </button>
-                        <button onClick={() => confirm("Reset all data?") && setVisited([])} className="flex flex-col items-center gap-1.5 text-red-500/30">
+                        <button 
+                            onClick={() => confirm("Reset progress?") && setVisited([])}
+                            className="flex flex-col items-center gap-1.5 text-red-500/40"
+                        >
                             <i className="fas fa-rotate-left text-xl"></i>
-                            <span className="text-[8px] font-bold uppercase tracking-widest">Reset</span>
+                            <span className="text-[9px] font-bold uppercase tracking-widest">Reset</span>
                         </button>
                     </nav>
                 </div>
