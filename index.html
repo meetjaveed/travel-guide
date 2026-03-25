@@ -10,22 +10,60 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .city-gradient { background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .check-btn { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .check-btn.active { background-color: #22c55e; color: white; transform: scale(1.05); box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); border-color: #22c55e; }
-        .check-btn.inactive { background-color: rgba(30, 41, 59, 0.6); color: rgba(148, 163, 184, 0.2); border: 1px solid rgba(255, 255, 255, 0.05); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         
-        /* Fixed Header Styles */
-        .fixed-top-box { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #020617; }
-        .content-container { padding-top: 105px; } /* Exact minimum space to avoid overlap */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #020617; 
+            color: #f8fafc; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass { 
+            background: rgba(15, 23, 42, 0.9); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+
+        .city-gradient { 
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+
+        .check-btn { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        .check-btn.active { 
+            background-color: #22c55e; 
+            color: white; 
+            transform: scale(1.05); 
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); 
+            border-color: #22c55e; 
+        }
+
+        .check-btn.inactive { 
+            background-color: rgba(30, 41, 59, 0.6); 
+            color: rgba(148, 163, 184, 0.2); 
+            border: 2px solid rgba(255, 255, 255, 0.1); 
+        }
+        
+        .fixed-top-box { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 100; 
+            background: #020617; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Adjusted padding for larger header */
+        .content-container { padding-top: 130px; } 
         
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="pb-28">
+<body class="pb-32">
 
     <div id="root"></div>
 
@@ -160,20 +198,20 @@
                 city: "Pushkar",
                 modes: ["Bus", "Auto"],
                 spots: [
-                    { name: "Brahma Temple", lat: 26.4900, lng: 74.5500, desc: "One of the world's very few dedicated temples to Lord Brahma, the creator. It is a major spiritual destination for pilgrims visiting the holy town of Pushkar." },
+                    { name: "Brahma Temple", lat: 26.4900, lng: 74.5500, desc: "One of the very few dedicated temples in the world for Lord Brahma, the creator. It is a major spiritual destination for pilgrims visiting the holy town of Pushkar." },
                     { name: "Pushkar Lake Ghats", lat: 26.4883, lng: 74.5518, desc: "A sacred lake with 52 bathing ghats where thousands gather for ritual dips. It is the heart of the town's religious life and host to the famous annual fair." }
                 ]
             }
         ];
 
         function App() {
-            const [visited, setVisited] = useState(() => JSON.parse(localStorage.getItem('v_v_final_1') || '[]'));
+            const [visited, setVisited] = useState(() => JSON.parse(localStorage.getItem('v_v_final_scaled') || '[]'));
             const [userLoc, setUserLoc] = useState(null);
             const [isTracking, setIsTracking] = useState(false);
             const [search, setSearch] = useState("");
             const [expanded, setExpanded] = useState({});
 
-            useEffect(() => { localStorage.setItem('v_v_final_1', JSON.stringify(visited)); }, [visited]);
+            useEffect(() => { localStorage.setItem('v_v_final_scaled', JSON.stringify(visited)); }, [visited]);
 
             const toggleGPS = () => {
                 if (isTracking) { setIsTracking(false); setUserLoc(null); return; }
@@ -181,7 +219,7 @@
                     setUserLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude });
                     setIsTracking(true);
                     navigator.geolocation.watchPosition(p => setUserLoc({ lat: p.coords.latitude, lng: p.coords.longitude }), null, {enableHighAccuracy: true});
-                }, () => alert("Enable GPS"), { enableHighAccuracy: true });
+                }, () => alert("Enable GPS in settings"), { enableHighAccuracy: true });
             };
 
             const calculateDist = (lat1, lon1, lat2, lon2) => {
@@ -198,84 +236,84 @@
 
             return (
                 <div className="min-h-screen">
-                    {/* FIXED MINI HEADER */}
-                    <div className="fixed-top-box px-4 pt-3 pb-3 border-b border-white/5 shadow-2xl">
-                        <header className="flex justify-between items-center mb-2.5">
+                    {/* FIXED MINI HEADER - SCALED UP */}
+                    <div className="fixed-top-box px-5 pt-4 pb-4 shadow-2xl">
+                        <header className="flex justify-between items-center mb-4">
                             <div>
-                                <h1 className="text-base font-extrabold tracking-tighter text-white italic uppercase leading-none">Quest Tracker</h1>
-                                <p className="text-[7px] font-black text-indigo-400 tracking-widest mt-1 uppercase">{visited.length} VISITED</p>
+                                <h1 className="text-xl font-extrabold tracking-tight text-white uppercase italic leading-none">Quest Tracker</h1>
+                                <p className="text-[10px] font-black text-indigo-400 tracking-widest mt-1.5 uppercase">{visited.length} Spots Completed</p>
                             </div>
-                            <button onClick={toggleGPS} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${isTracking ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.3)]' : 'bg-slate-800'}`}>
-                                <i className={`fas ${isTracking ? 'fa-satellite animate-pulse' : 'fa-location-dot'} text-xs`}></i>
+                            <button onClick={toggleGPS} className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${isTracking ? 'bg-indigo-600 shadow-[0_0_20px_rgba(79,70,229,0.4)]' : 'bg-slate-800'}`}>
+                                <i className={`fas ${isTracking ? 'fa-satellite animate-pulse' : 'fa-location-dot'} text-base text-white`}></i>
                             </button>
                         </header>
                         <div className="relative">
-                            <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 text-[9px]"></i>
+                            <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
                             <input 
                                 value={search} onChange={e=>setSearch(e.target.value)}
                                 placeholder="Search cities or monuments..." 
-                                className="w-full bg-slate-900 border border-white/5 rounded-lg py-1.5 pl-8 pr-3 text-[9px] text-white focus:outline-none"
+                                className="w-full bg-slate-900/80 border border-white/10 rounded-2xl py-2.5 pl-11 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
                             />
                         </div>
                     </div>
 
-                    <main className="content-container px-4 space-y-10">
+                    <main className="content-container px-4 space-y-12">
                         {filtered.map((group) => (
-                            <div key={group.city} className="space-y-4">
-                                <div className="flex items-center justify-between px-1">
-                                    <h2 className="city-gradient font-black text-[10px] uppercase tracking-widest">{group.city}</h2>
-                                    <div className="flex gap-1">
+                            <div key={group.city} className="space-y-5">
+                                <div className="flex items-center justify-between px-2">
+                                    <h2 className="city-gradient font-black text-sm uppercase tracking-[0.2em]">{group.city}</h2>
+                                    <div className="flex gap-1.5">
                                         {group.modes.map(m => (
-                                            <span key={m} className="text-[6px] font-bold text-slate-500 border border-white/5 px-1 py-0.5 rounded bg-slate-900/50 uppercase">
+                                            <span key={m} className="text-[9px] font-bold text-slate-400 border border-white/5 px-2 py-0.5 rounded-md bg-slate-900/50 uppercase tracking-tighter">
                                                 {m}
                                             </span>
                                         ))}
                                     </div>
                                 </div>
                                 
-                                <div className="grid gap-3">
+                                <div className="grid gap-4">
                                     {group.spots.map(spot => {
                                         const isVisited = visited.includes(spot.name);
                                         const dist = userLoc ? calculateDist(userLoc.lat, userLoc.lng, spot.lat, spot.lng) : null;
                                         const isExp = expanded[spot.name];
 
                                         return (
-                                            <div key={spot.name} className={`glass p-3 rounded-2xl flex items-start gap-3 transition-all ${isVisited ? 'opacity-40 grayscale' : ''}`}>
+                                            <div key={spot.name} className={`glass p-4 rounded-[28px] flex items-start gap-4 transition-all ${isVisited ? 'opacity-40 grayscale' : ''}`}>
                                                 
                                                 {/* Left: Location Display + Check */}
-                                                <div className="flex flex-col items-center shrink-0 w-14 pt-1">
-                                                    <span className={`text-[6px] font-black mb-1.5 text-center leading-none uppercase ${isTracking ? 'text-green-400' : 'text-slate-600'}`}>
+                                                <div className="flex flex-col items-center shrink-0 w-16 pt-1">
+                                                    <span className={`text-[9px] font-black mb-2 text-center leading-none uppercase tracking-tighter ${isTracking ? 'text-green-400' : 'text-slate-500'}`}>
                                                         {isTracking ? (dist !== null ? (dist < 1 ? `${Math.round(dist*1000)}m` : `${dist.toFixed(1)}km`) : '---') : 'Location Off'}
                                                     </span>
                                                     <button 
                                                         onClick={() => setVisited(v => v.includes(spot.name) ? v.filter(n=>n!==spot.name) : [...v, spot.name])}
-                                                        className={`check-btn w-10 h-10 rounded-xl flex items-center justify-center border-2 ${isVisited ? 'active border-green-500' : 'inactive border-slate-700'}`}
+                                                        className={`check-btn w-12 h-12 rounded-2xl flex items-center justify-center border-2 ${isVisited ? 'active border-green-500' : 'inactive border-slate-700'}`}
                                                     >
-                                                        <i className={`fas ${isVisited ? 'fa-check' : 'fa-plus'} text-[10px]`}></i>
+                                                        <i className={`fas ${isVisited ? 'fa-check' : 'fa-plus'} text-base`}></i>
                                                     </button>
                                                 </div>
 
-                                                {/* Middle: Name + Desc */}
+                                                {/* Middle: Name + Desc - SCALED UP */}
                                                 <div className="flex-1 min-w-0 pr-1">
-                                                    <h4 className="text-[11px] font-bold text-slate-100 truncate mb-1 uppercase tracking-tight">{spot.name}</h4>
-                                                    <p className={`text-[9px] text-slate-400 leading-tight italic ${isExp ? '' : 'line-clamp-2'}`}>
+                                                    <h4 className={`text-base font-bold tracking-tight mb-1 ${isVisited ? 'text-slate-500 line-through' : 'text-slate-100'}`}>{spot.name}</h4>
+                                                    <p className={`text-[13px] text-slate-400 leading-snug italic ${isExp ? '' : 'line-clamp-2'}`}>
                                                         {spot.desc}
                                                     </p>
                                                     <button 
                                                         onClick={() => setExpanded(prev => ({ ...prev, [spot.name]: !prev[spot.name] }))}
-                                                        className="text-[8px] font-bold text-indigo-400 mt-1 uppercase"
+                                                        className="text-[10px] font-bold text-indigo-400 mt-2 uppercase tracking-widest bg-indigo-500/10 px-2 py-0.5 rounded-md"
                                                     >
                                                         {isExp ? 'View Less' : 'View More'}
                                                     </button>
                                                 </div>
 
                                                 {/* Right: Map Actions */}
-                                                <div className="flex flex-col gap-2 shrink-0">
-                                                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`} target="_blank" className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 text-slate-400">
-                                                        <i className="fa-solid fa-diamond-turn-right text-[10px]"></i>
+                                                <div className="flex flex-col gap-2.5 shrink-0">
+                                                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`} target="_blank" className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 shadow-inner">
+                                                        <i className="fa-solid fa-diamond-turn-right text-base"></i>
                                                     </a>
-                                                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=transit`} target="_blank" className="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-900/30 text-indigo-400 border border-indigo-500/20">
-                                                        <i className="fa-solid fa-train-subway text-[10px]"></i>
+                                                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=transit`} target="_blank" className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-900/40 text-indigo-400 border border-indigo-500/20">
+                                                        <i className="fa-solid fa-train-subway text-base"></i>
                                                     </a>
                                                 </div>
                                             </div>
@@ -287,14 +325,14 @@
                     </main>
 
                     {/* Navigation Footer */}
-                    <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[85%] max-w-xs bg-slate-900/90 backdrop-blur-2xl border border-white/5 py-2.5 px-8 rounded-full flex justify-between shadow-2xl z-50">
-                        <button onClick={()=>window.scrollTo({top:0, behavior:'smooth'})} className="flex flex-col items-center gap-0.5 text-indigo-500">
-                            <i className="fas fa-home text-xs"></i>
-                            <span className="text-[6px] font-bold uppercase tracking-widest">Guide</span>
+                    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[85%] max-w-xs bg-slate-900/90 backdrop-blur-2xl border border-white/5 py-3 px-8 rounded-full flex justify-between shadow-2xl z-50">
+                        <button onClick={()=>window.scrollTo({top:0, behavior:'smooth'})} className="flex flex-col items-center gap-1 text-indigo-500">
+                            <i className="fas fa-home text-lg"></i>
+                            <span className="text-[8px] font-bold uppercase tracking-widest">Guide</span>
                         </button>
-                        <button onClick={()=>confirm("Reset history?") && setVisited([])} className="flex flex-col items-center gap-0.5 text-red-500/40">
-                            <i className="fas fa-power-off text-xs"></i>
-                            <span className="text-[6px] font-bold uppercase tracking-widest">Reset</span>
+                        <button onClick={()=>confirm("Reset history?") && setVisited([])} className="flex flex-col items-center gap-1 text-red-500/40">
+                            <i className="fas fa-rotate-left text-lg"></i>
+                            <span className="text-[8px] font-bold uppercase tracking-widest">Reset</span>
                         </button>
                     </nav>
                 </div>
