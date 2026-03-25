@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hubli Travel Quest</title>
+    <title>Panduan Perjalanan Hubli</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -48,7 +48,6 @@
             animation: fadeIn 0.4s ease forwards;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
@@ -58,7 +57,6 @@
 
     <div id="root"></div>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -70,117 +68,119 @@
             {
                 city: "Agra",
                 spots: [
-                    { name: "Taj Mahal", lat: 27.1751, lng: 78.0421, desc: "A world-famous white marble mausoleum built by Shah Jahan in memory of his wife. It is a masterpiece of Mughal architecture and a UNESCO World Heritage site." },
-                    { name: "Agra Fort", lat: 27.1795, lng: 78.0211, desc: "A historic red sandstone fortress that served as the main residence of the Mughal emperors. It contains various palaces like the Khas Mahal and Jahangir Palace." },
-                    { name: "Itmad-ud-Daulah (Baby Taj)", lat: 27.1929, lng: 78.0311, desc: "Often referred to as the 'Baby Taj', this tomb is the first Mughal structure built entirely of marble. It features delicate inlay work and is located on the bank of the Yamuna." },
-                    { name: "Jama Masjid", lat: 27.1858, lng: 78.0163, desc: "A grand 17th-century mosque built by Shah Jahan's daughter, Jahanara Begum. It is known for its red sandstone structure and marble domes." },
-                    { name: "Moti Masjid", lat: 27.1800, lng: 78.0220, desc: "The 'Pearl Mosque' located within Agra Fort, known for its pristine white marble architecture. It was built by Shah Jahan for the royal members of the court." },
-                    { name: "Mehtab Bagh", lat: 27.1788, lng: 78.0423, desc: "The Moonlight Garden situated on the opposite bank of the Yamuna, offering a spectacular view of the Taj Mahal. It was the last of eleven Mughal-built gardens." },
-                    { name: "Ram Bagh", lat: 27.2000, lng: 78.0400, desc: "The oldest Mughal garden in India, originally laid out by Emperor Babur in 1528. It is designed in the traditional Charbagh style with cooling water channels." }
+                    { name: "Taj Mahal", lat: 27.1751, lng: 78.0421, desc: "Mausoleum marmer putih megah yang dibangun oleh Shah Jahan untuk mengenang istrinya. Ini adalah mahakarya arsitektur Mughal dan situs Warisan Dunia UNESCO." },
+                    { name: "Benteng Agra", lat: 27.1795, lng: 78.0211, desc: "Benteng batu pasir merah bersejarah yang berfungsi sebagai kediaman utama kaisar Mughal. Di dalamnya terdapat berbagai istana seperti Khas Mahal dan Istana Jahangir." },
+                    { name: "Itmad-ud-Daulah (Baby Taj)", lat: 27.1929, lng: 78.0311, desc: "Sering disebut sebagai 'Baby Taj', makam ini adalah struktur Mughal pertama yang seluruhnya terbuat dari marmer. Memiliki hiasan tatahan halus dan terletak di tepi sungai Yamuna." },
+                    { name: "Jama Masjid", lat: 27.1858, lng: 78.0163, desc: "Masjid megah dari abad ke-17 yang dibangun oleh putri Shah Jahan, Jahanara Begum. Dikenal dengan struktur batu pasir merah dan kubah marmernya." },
+                    { name: "Moti Masjid", lat: 27.1800, lng: 78.0220, desc: "Masjid Mutiara yang terletak di dalam Benteng Agra, dikenal karena arsitektur marmer putihnya yang murni. Dibangun oleh Shah Jahan untuk anggota istana kerajaan." },
+                    { name: "Mehtab Bagh", lat: 27.1788, lng: 78.0423, desc: "Taman Cahaya Bulan yang terletak di tepi seberang sungai Yamuna, menawarkan pemandangan spektakuler Taj Mahal. Merupakan taman Mughal terakhir dari sebelas taman yang dibangun." },
+                    { name: "Ram Bagh", lat: 27.2000, lng: 78.0400, desc: "Taman Mughal tertua di India, awalnya dirancang oleh Kaisar Babur pada tahun 1528. Dirancang dengan gaya Charbagh tradisional dengan saluran air yang menyejukkan." }
                 ]
             },
             {
                 city: "Lucknow",
                 spots: [
-                    { name: "Bara Imambara", lat: 26.8689, lng: 80.9135, desc: "A grand assembly hall with a massive vaulted chamber built without any beams. It houses the famous Bhulbhulaiya, a complex labyrinth of corridors." },
-                    { name: "Chhota Imambara", lat: 26.8770, lng: 80.9048, desc: "Also known as the Palace of Lights, famous for its intricate chandeliers and silver throne. It was built by Muhammad Ali Shah and features exquisite calligraphy." },
-                    { name: "Rumi Darwaza", lat: 26.8684, lng: 80.9122, desc: "An imposing gateway that is a signature landmark of Lucknow, modeled after the Sublime Porte in Istanbul. It stands sixty feet tall and showcases Awadhi architecture." },
-                    { name: "The Residency", lat: 26.8631, lng: 80.9272, desc: "A group of ruins that served as the residence for the British Resident General. It played a significant role during the 1857 uprising and is now a protected monument." },
-                    { name: "Ambedkar Memorial Park", lat: 26.8454, lng: 80.9785, desc: "A massive public park and memorial built entirely of red sandstone from Rajasthan. It features sprawling lawns, elephant statues, and a grand memorial stupa." },
-                    { name: "Janeshwar Mishra Park", lat: 26.8400, lng: 81.0000, desc: "An eco-friendly park claimed to be Asia's largest, featuring jogging tracks and a man-made lake. It provides a vast green lung for the city of Lucknow." },
-                    { name: "Dargah Dada Miyan", lat: 26.8521, lng: 80.9322, desc: "A highly revered Sufi shrine of Hazrat Shah Meena Shah, located in the old city. It attracts devotees from all walks of life seeking spiritual peace." },
-                    { name: "Shah Mina Shah Mazar", lat: 26.8500, lng: 80.9300, desc: "The resting place of the 15th-century Sufi saint, known as the patron saint of Lucknow. The shrine is a center for spiritual guidance and communal harmony." }
+                    { name: "Bara Imambara", lat: 26.8689, lng: 80.9135, desc: "Aula pertemuan megah dengan ruang berkubah besar tanpa tiang penyangga. Di dalamnya terdapat Bhulbhulaiya yang terkenal, sebuah labirin koridor yang rumit." },
+                    { name: "Chhota Imambara", lat: 26.8770, lng: 80.9048, desc: "Juga dikenal sebagai Istana Cahaya, terkenal dengan lampu kristal dan takhta peraknya yang rumit. Dibangun oleh Muhammad Ali Shah dengan kaligrafi yang indah." },
+                    { name: "Rumi Darwaza", lat: 26.8684, lng: 80.9122, desc: "Gerbang megah yang menjadi ikon Lucknow, meniru gerbang Sublime Porte di Istanbul. Berdiri setinggi enam puluh kaki dan menampilkan arsitektur Awadhi yang khas." },
+                    { name: "The Residency", lat: 26.8631, lng: 80.9272, desc: "Sekelompok reruntuhan yang berfungsi sebagai kediaman Jenderal Residen Inggris. Memainkan peran penting selama pemberontakan 1857 dan sekarang menjadi monumen yang dilindungi." },
+                    { name: "Ambedkar Memorial Park", lat: 26.8454, lng: 80.9785, desc: "Taman umum dan peringatan besar yang seluruhnya dibangun dari batu pasir merah Rajasthan. Menampilkan halaman luas, patung gajah, dan stupa peringatan megah." },
+                    { name: "Janeshwar Mishra Park", lat: 26.8400, lng: 81.0000, desc: "Taman ramah lingkungan yang diklaim sebagai yang terbesar di Asia, memiliki lintasan lari dan danau buatan. Menjadi paru-paru hijau yang luas bagi kota Lucknow." },
+                    { name: "Dargah Dada Miyan", lat: 26.8521, lng: 80.9322, desc: "Kuil Sufi Hazrat Shah Meena Shah yang sangat dihormati, terletak di kota tua. Menarik pengunjung dari berbagai kalangan yang mencari kedamaian spiritual." },
+                    { name: "Shah Mina Shah Mazar", lat: 26.8500, lng: 80.9300, desc: "Tempat peristirahatan orang suci Sufi abad ke-15, dikenal sebagai pelindung kota Lucknow. Kuil ini menjadi pusat bimbingan spiritual dan harmoni komunal." }
                 ]
             },
             {
                 city: "Bahraich",
                 spots: [
-                    { name: "Dargah Syed Salar Masood Ghazi", lat: 27.5855, lng: 81.6033, desc: "An ancient shrine of the 11th-century warrior saint, visited by thousands during the annual Jeth Mela. It is a symbol of faith and religious syncretism in the region." },
-                    { name: "Maneejri Masjid", lat: 27.5700, lng: 81.5900, desc: "A local historical mosque known for its traditional architecture and community importance. It serves as a spiritual hub for the residents of Bahraich." },
-                    { name: "Jama Masjid Bahraich", lat: 27.5750, lng: 81.6000, desc: "The central congregational mosque of the city, featuring classic minarets and domes. It is the primary site for Friday prayers and major Islamic festivals." }
+                    { name: "Dargah Syed Salar Masood Ghazi", lat: 27.5855, lng: 81.6033, desc: "Kuil kuno santo pejuang abad ke-11, dikunjungi oleh ribuan orang selama Jeth Mela tahunan. Simbol kepercayaan dan sinkretisme agama di wilayah tersebut." },
+                    { name: "Maneejri Masjid", lat: 27.5700, lng: 81.5900, desc: "Masjid bersejarah lokal yang dikenal karena arsitektur tradisional dan kepentingan komunitasnya. Berfungsi sebagai pusat spiritual bagi penduduk Bahraich." },
+                    { name: "Jama Masjid Bahraich", lat: 27.5750, lng: 81.6000, desc: "Masjid jemaah pusat kota, menampilkan menara dan kubah klasik. Merupakan situs utama untuk salat Jumat dan festival Islam besar." }
                 ]
             },
             {
                 city: "Kanpur / Makanpur",
                 spots: [
-                    { name: "Dargah Zinda Shah Madar", lat: 26.8373, lng: 80.0465, desc: "A world-renowned shrine of the founder of the Madariyya Sufi order. Located in Makanpur, it is one of the oldest and most prominent Sufi centers in India." },
-                    { name: "Kanpur Memorial Church", lat: 26.4500, lng: 80.3600, desc: "Built in 1875 in Gothic Revival style to honor the British lost during the 1857 siege. It features beautiful stained glass windows and detailed brickwork." },
-                    { name: "JK Temple", lat: 26.4754, lng: 80.3060, desc: "A stunning white marble temple dedicated to Lord Radhakrishna, blending ancient and modern styles. It is surrounded by lush gardens and is a major landmark in Kanpur." },
-                    { name: "Allen Forest Zoo", lat: 26.5050, lng: 80.3000, desc: "One of the few zoos in India created in a natural forest, providing a large habitat for animals. It is a major recreational spot and center for wildlife conservation." },
-                    { name: "Nana Rao Park", lat: 26.4700, lng: 80.3500, desc: "A historic park built on the site of the 1857 Bibighar massacre, now dedicated to Nana Sahib. It serves as a peaceful city park with various statues and plant life." }
+                    { name: "Dargah Zinda Shah Madar", lat: 26.8373, lng: 80.0465, desc: "Kuil Sufi ternama di dunia yang merupakan pendiri tarekat Sufi Madariyya di Makanpur. Salah satu pusat Sufi tertua dan paling menonjol di India." },
+                    { name: "Gereja Memorial Kanpur", lat: 26.4500, lng: 80.3600, desc: "Dibangun tahun 1875 dengan gaya Kebangkitan Gotik untuk menghormati tentara Inggris yang gugur pada 1857. Memiliki jendela kaca patri dan pengerjaan bata yang detail." },
+                    { name: "Kuil JK", lat: 26.4754, lng: 80.3060, desc: "Kuil marmer putih menakjubkan yang didedikasikan untuk Dewa Radhakrishna. Dikelilingi oleh taman yang asri dan merupakan landmark utama di Kanpur." },
+                    { name: "Allen Forest Zoo", lat: 26.5050, lng: 80.3000, desc: "Salah satu dari sedikit kebun binatang di India yang dibuat di hutan alami. Menjadi tempat rekreasi utama dan pusat konservasi satwa liar di Kanpur." },
+                    { name: "Taman Nana Rao", lat: 26.4700, lng: 80.3500, desc: "Taman bersejarah yang dibangun di lokasi pembantaian Bibighar 1857, sekarang didedikasikan untuk Nana Sahib. Berfungsi sebagai taman kota yang tenang." }
                 ]
             },
             {
                 city: "Kichocha (Akbarpur)",
                 spots: [
-                    { name: "Dargah Makhdoom Ashraf Semnani", lat: 26.4258, lng: 82.7569, desc: "A world-famous Sufi shrine known for its spiritual healing and tranquility. The 'Neer' (holy water) from the nearby pond is believed to have curative properties." }
+                    { name: "Dargah Makhdoom Ashraf Semnani", lat: 26.4258, lng: 82.7569, desc: "Kuil Sufi terkenal di dunia yang dikenal dengan penyembuhan spiritual dan ketenangannya. Air suci (Neer) dari kolam di dekatnya dipercaya memiliki khasiat penyembuhan." }
                 ]
             },
             {
                 city: "Bareilly",
                 spots: [
-                    { name: "Dargah-e-Ala Hazrat", lat: 28.3751, lng: 79.4144, desc: "The shrine of Imam Ahmed Raza Khan, a 19th-century polymath and influential Islamic scholar. It is a global center for the Barelvi movement and Islamic learning." },
-                    { name: "Dargah Shah Sharafat Ali Mia", lat: 28.3600, lng: 79.4200, desc: "A prominent Sufi shrine dedicated to Shah Sharafat Ali, known for its beautiful architecture. It is a site of deep spiritual significance for the local community." },
-                    { name: "Phool Bagh", lat: 28.3700, lng: 79.4100, desc: "A well-maintained public garden in Bareilly offering a peaceful environment for recreation. It features variety of flora and is a popular spot for morning walks." },
-                    { name: "Akshar Vihar", lat: 28.3500, lng: 79.4300, desc: "A recreational park centered around a large lake, popular for boating and family outings. It is one of the major green spaces for residents of Bareilly." }
+                    { name: "Dargah-e-Ala Hazrat", lat: 28.3751, lng: 79.4144, desc: "Kuil Imam Ahmed Raza Khan, cendekiawan Islam berpengaruh dari abad ke-19. Menjadi pusat global untuk gerakan Barelvi dan pembelajaran Islam." },
+                    { name: "Dargah Shah Sharafat Ali Mia", lat: 28.3600, lng: 79.4200, desc: "Kuil Sufi terkemuka yang didedikasikan untuk Shah Sharafat Ali, dikenal karena arsitekturnya yang indah. Situs spiritual yang mendalam bagi masyarakat lokal." },
+                    { name: "Phool Bagh", lat: 28.3700, lng: 79.4100, desc: "Taman umum yang terawat baik di Bareilly menawarkan lingkungan yang tenang untuk rekreasi. Memiliki berbagai jenis flora dan populer untuk jalan pagi." },
+                    { name: "Akshar Vihar", lat: 28.3500, lng: 79.4300, desc: "Taman rekreasi yang berpusat di sekitar danau besar, populer untuk naik perahu dan tamasya keluarga. Salah satu ruang terbuka hijau utama di Bareilly." }
                 ]
             },
             {
                 city: "Haridwar / Roorkee",
                 spots: [
-                    { name: "Piran Kaliyar Sharif", lat: 29.9161, lng: 77.9351, desc: "The 13th-century shrine of Alauddin Ali Ahmed Sabir Kaliyari near Roorkee. It is one of the most sacred Sufi sites in India, famous for its spiritual aura." },
-                    { name: "Har Ki Pauri", lat: 29.9564, lng: 78.1707, desc: "The most famous ghat on the banks of the Ganges where the evening Aarti is performed. It is believed to be the spot where the river enters the plains from the mountains." }
+                    { name: "Piran Kaliyar Sharif", lat: 29.9161, lng: 77.9351, desc: "Kuil abad ke-13 dari Alauddin Ali Ahmed Sabir Kaliyari dekat Roorkee. Salah satu situs Sufi paling suci di India dengan aura spiritual yang kuat." },
+                    { name: "Har Ki Pauri", lat: 29.9564, lng: 78.1707, desc: "Ghat paling terkenal di tepi sungai Gangga tempat pemujaan Aarti malam dilakukan. Dipercaya sebagai titik di mana sungai memasuki dataran rendah." }
                 ]
             },
             {
                 city: "Sadhaura (near Ambala)",
                 spots: [
-                    { name: "Dargah of Shah Qumais", lat: 30.3792, lng: 77.2025, desc: "A historic Sufi shrine in Sadhaura belonging to the Qadiriya order. It is an important spiritual landmark for the Gumaisia region and northern Haryana." }
+                    { name: "Dargah of Shah Qumais", lat: 30.3792, lng: 77.2025, desc: "Kuil Sufi bersejarah di Sadhaura milik tarekat Qadiriya. Merupakan landmark spiritual penting bagi wilayah Gumaisia dan Haryana utara." }
                 ]
             },
             {
                 city: "Panipat",
                 spots: [
-                    { name: "Kala Amb", lat: 29.4000, lng: 76.9900, desc: "A memorial site marking the spot where the 3rd Battle of Panipat took place in 1761. It serves as a tribute to the Maratha warriors who fought with great bravery." },
-                    { name: "Panipat Museum", lat: 29.3950, lng: 76.9800, desc: "A museum dedicated to the history of the three legendary battles of Panipat. It displays artifacts, weapons, and maps that showcase the region's military past." },
-                    { name: "Dargah Bu Ali Shah Qalandar", lat: 29.3909, lng: 76.9744, desc: "The shrine of the 13th-century Sufi saint from Azerbaijan who settled in Panipat. It is a center of spirituality and attracts visitors of all faiths." },
-                    { name: "Ibrahim Lodhi’s Tomb", lat: 29.3920, lng: 76.9750, desc: "The final resting place of the last Sultan of the Lodi dynasty, killed in the 1st Battle of Panipat. It is a simple rectangular structure standing on a high platform." }
+                    { name: "Kala Amb", lat: 29.4000, lng: 76.9900, desc: "Situs peringatan yang menandai lokasi Pertempuran Panipat ke-3 tahun 1761. Berfungsi sebagai penghormatan kepada prajurit Maratha yang bertempur dengan gagah berani." },
+                    { name: "Museum Panipat", lat: 29.3950, lng: 76.9800, desc: "Museum yang didedikasikan untuk sejarah tiga pertempuran legendaris di Panipat. Menampilkan artefak, senjata, dan peta masa lalu militer wilayah tersebut." },
+                    { name: "Dargah Bu Ali Shah Qalandar", lat: 29.3909, lng: 76.9744, desc: "Kuil santo Sufi abad ke-13 dari Azerbaijan yang menetap di Panipat. Menjadi pusat spiritualitas dan menarik pengunjung dari berbagai keyakinan." },
+                    { name: "Makam Ibrahim Lodhi", lat: 29.3920, lng: 76.9750, desc: "Tempat peristirahatan terakhir Sultan terakhir dari dinasti Lodi, gugur dalam Pertempuran Panipat ke-1. Berupa struktur persegi panjang sederhana di atas panggung tinggi." }
                 ]
             },
             {
                 city: "Delhi",
                 spots: [
-                    { name: "Red Fort", lat: 28.6562, lng: 77.2410, desc: "A UNESCO World Heritage site and the primary residence of the Mughal emperors for 200 years. It is a symbol of India's independence and architectural grandeur." },
-                    { name: "Humayun’s Tomb", lat: 28.5933, lng: 77.2507, desc: "The first garden-tomb on the Indian subcontinent, built in 1570 for the Mughal Emperor. It served as the architectural inspiration for the Taj Mahal." },
-                    { name: "Qutub Minar", lat: 28.5244, lng: 77.1855, desc: "The tallest brick minaret in the world, built in 1193 by Qutb-ud-din Aibak. The complex also houses the ancient Iron Pillar and various ruined temples." },
-                    { name: "Jama Masjid", lat: 28.6507, lng: 77.2334, desc: "One of the largest mosques in India, built by Emperor Shah Jahan in the heart of Old Delhi. It can accommodate more than 25,000 devotees in its courtyard." },
-                    { name: "Nizamuddin Dargah", lat: 28.5913, lng: 77.2425, desc: "The shrine of the world-renowned Sufi saint Nizamuddin Auliya, located in the Nizamuddin area. It is famous for its soulful evening Qawwali sessions." },
-                    { name: "Lotus Temple", lat: 28.5535, lng: 77.2588, desc: "A Bahá'í House of Worship notable for its lotus-like flower shape. It is a site of silent prayer and meditation open to people of all religions." },
-                    { name: "Lodhi Gardens", lat: 28.5931, lng: 77.2197, desc: "A vast city park containing the tombs of 15th-century Lodhi and Sayyid rulers. It is a popular spot for walkers and history enthusiasts in South Delhi." },
-                    { name: "Garden of Five Senses", lat: 28.5100, lng: 77.2000, desc: "A uniquely designed park in Saket meant to stimulate all five human senses. It features murals, sculptures, and various themed gardens in a sprawling area." }
+                    { name: "Dargah Hazrat Qutubuddin Bakhtiyar Kaki", lat: 28.5220, lng: 77.1840, desc: "Kuil Sufi tertua di Delhi yang didedikasikan untuk penerus spiritual Khwaja Moinuddin Chishti. Terletak di Mehrauli dan merupakan situs kedamaian spiritual yang tinggi." },
+                    { name: "Hazrat Khwaja Nasiruddin Mahmood Chirag-Dehlavi Dargah", lat: 28.5410, lng: 77.2380, desc: "Tempat peristirahatan santo Sufi abad ke-14 yang dikenal sebagai 'Lampu dari Delhi'. Kuil ini merupakan tempat suci bersejarah yang sangat dihormati di Delhi Selatan." },
+                    { name: "Benteng Merah", lat: 28.6562, lng: 77.2410, desc: "Situs Warisan Dunia UNESCO dan kediaman utama kaisar Mughal selama 200 tahun. Simbol kemerdekaan India dan kemegahan arsitektur dengan dinding batu pasir merahnya." },
+                    { name: "Makam Humayun", lat: 28.5933, lng: 77.2507, desc: "Makam taman pertama di India, dibangun tahun 1570 untuk Kaisar Humayun. Berfungsi sebagai inspirasi arsitektural bagi pembangunan Taj Mahal di masa depan." },
+                    { name: "Qutub Minar", lat: 28.5244, lng: 77.1855, desc: "Menara bata tertinggi di dunia, dibangun tahun 1193 oleh Qutb-ud-din Aibak. Kompleks ini juga menyimpan Pilar Besi kuno dan berbagai reruntuhan candi kuno." },
+                    { name: "Jama Masjid Delhi", lat: 28.6507, lng: 77.2334, desc: "Salah satu masjid terbesar di India, dibangun oleh Kaisar Shah Jahan di jantung Old Delhi. Dapat menampung lebih dari 25.000 jemaah di halaman luasnya." },
+                    { name: "Nizamuddin Dargah", lat: 28.5913, lng: 77.2425, desc: "Kuil orang suci Sufi ternama dunia Nizamuddin Auliya. Terkenal dengan sesi Qawwali malamnya yang menyentuh jiwa dan suasana religius yang kental." },
+                    { name: "Kuil Lotus", lat: 28.5535, lng: 77.2588, desc: "Rumah Ibadah Baha'i yang terkenal dengan bentuk bunga teratainya. Situs doa dan meditasi dalam keheningan yang terbuka bagi orang-orang dari semua agama." },
+                    { name: "Taman Lodhi", lat: 28.5931, lng: 77.2197, desc: "Taman kota luas yang berisi makam penguasa Lodhi dan Sayyid abad ke-15. Tempat populer bagi pejalan kaki dan penggemar sejarah di Delhi Selatan." },
+                    { name: "Garden of Five Senses", lat: 28.5100, lng: 77.2000, desc: "Taman yang dirancang unik di Saket untuk merangsang lima indera manusia. Menampilkan mural, patung, dan berbagai taman bertema di area yang luas." }
                 ]
             },
             {
                 city: "Ajmer",
                 spots: [
-                    { name: "Ajmer Sharif Dargah", lat: 26.4561, lng: 74.6284, desc: "The holy shrine of Khwaja Moinuddin Chishti, the founder of the Chishtiya Sufi order. It is one of the most sacred and visited pilgrimage sites in India." },
-                    { name: "Taragarh Fort", lat: 26.4468, lng: 74.6189, desc: "A historic fort built on a steep hill, offering panoramic views of Ajmer city. It was one of the oldest hill forts in India and served as a strategic military outpost." },
-                    { name: "Adhai Din Ka Jhopda", lat: 26.4552, lng: 74.6251, desc: "An early Indo-Islamic mosque built by Qutb-ud-din Aibak in just two and a half days. It features a stunning screen of arches and intricately carved pillars." },
-                    { name: "Ana Sagar Lake", lat: 26.4741, lng: 74.6258, desc: "A large artificial lake built in the 12th century, surrounded by marble pavilions (Baradari). It is a popular spot for evening walks and enjoying the scenic sunset." },
-                    { name: "Daulat Bagh gardens", lat: 26.4750, lng: 74.6260, desc: "A beautiful garden adjacent to Ana Sagar Lake, built by Emperor Jahangir. It features marble pavilions and lush greenery, perfect for relaxation by the lakeside." }
+                    { name: "Ajmer Sharif Dargah", lat: 26.4561, lng: 74.6284, desc: "Kuil suci Khwaja Moinuddin Chishti, pendiri tarekat Sufi Chishtiya. Merupakan salah satu situs ziarah paling suci dan paling banyak dikunjungi di India." },
+                    { name: "Benteng Taragarh", lat: 26.4468, lng: 74.6189, desc: "Benteng bersejarah yang dibangun di bukit curam, menawarkan pemandangan panorama kota Ajmer. Salah satu benteng bukit tertua yang berfungsi sebagai pos militer strategis." },
+                    { name: "Adhai Din Ka Jhopda", lat: 26.4552, lng: 74.6251, desc: "Masjid Indo-Islam awal yang dibangun oleh Qutb-ud-din Aibak hanya dalam dua setengah hari. Menampilkan layar lengkung yang menakjubkan dan pilar berukir rumit." },
+                    { name: "Danau Ana Sagar", lat: 26.4741, lng: 74.6258, desc: "Danau buatan besar yang dibangun pada abad ke-12, dikelilingi oleh paviliun marmer (Baradari). Tempat populer untuk jalan sore dan menikmati matahari terbenam." },
+                    { name: "Taman Daulat Bagh", lat: 26.4750, lng: 74.6260, desc: "Taman indah di samping Danau Ana Sagar, dibangun oleh Kaisar Jahangir. Memiliki paviliun marmer dan tanaman hijau subur untuk bersantai di tepi danau." }
                 ]
             },
             {
                 city: "Salwar Sharif",
                 spots: [
-                    { name: "Dargah of Khwaja Fakhruddin Chishti", lat: 26.5500, lng: 74.8000, desc: "The shrine of the eldest son of Khwaja Moinuddin Chishti, located in Salwar. It is a significant Sufi site for those following the Chishtiya tradition." }
+                    { name: "Dargah of Khwaja Fakhruddin Chishti", lat: 26.5500, lng: 74.8000, desc: "Kuil putra tertua Khwaja Moinuddin Chishti yang terletak di Salwar. Situs Sufi penting bagi mereka yang mengikuti tradisi Chishtiya." }
                 ]
             },
             {
                 city: "Pushkar",
                 spots: [
-                    { name: "Brahma Temple", lat: 26.4900, lng: 74.5500, desc: "One of the very few temples in the world dedicated to the Hindu creator god, Brahma. It is a major site for pilgrims visiting the holy town of Pushkar." },
-                    { name: "Pushkar Lake Ghats", lat: 26.4883, lng: 74.5518, desc: "A sacred lake surrounded by 52 bathing ghats where devotees take a holy dip. It is the center of the town's religious life and host to the famous Pushkar fair." }
+                    { name: "Kuil Brahma", lat: 26.4900, lng: 74.5500, desc: "Salah satu dari sedikit kuil di dunia yang didedikasikan untuk dewa pencipta Hindu, Brahma. Situs utama bagi peziarah yang mengunjungi kota suci Pushkar." },
+                    { name: "Pushkar Lake Ghats", lat: 26.4883, lng: 74.5518, desc: "Danau suci yang dikelilingi oleh 52 ghat mandi tempat para pemuja melakukan ritual mandi suci. Pusat kehidupan religius kota dan tuan rumah festival Pushkar." }
                 ]
             }
         ];
@@ -208,7 +208,7 @@
 
             const toggleGPS = () => {
                 if (!navigator.geolocation) {
-                    alert("Geolocation is not supported by your browser.");
+                    alert("Geolokasi tidak didukung oleh peramban Anda.");
                     return;
                 }
 
@@ -220,7 +220,6 @@
                         (pos) => {
                             setUserLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude });
                             setIsTracking(true);
-                            // Set up continuous watch
                             navigator.geolocation.watchPosition(
                                 (watchPos) => setUserLoc({ lat: watchPos.coords.latitude, lng: watchPos.coords.longitude }),
                                 (err) => console.error(err),
@@ -228,7 +227,7 @@
                             );
                         },
                         (err) => {
-                            alert("Please enable location access in your device settings to use the Radar.");
+                            alert("Mohon aktifkan akses lokasi di pengaturan perangkat Anda untuk menggunakan Radar.");
                             setIsTracking(false);
                         },
                         { enableHighAccuracy: true }
@@ -255,7 +254,6 @@
 
             return (
                 <div className="min-h-screen max-w-2xl mx-auto p-4 space-y-6">
-                    {/* Minimal Header */}
                     <header className="flex justify-between items-center py-4 sticky top-0 bg-[#020617] z-50">
                         <div>
                             <h1 className="text-2xl font-black tracking-tight text-white uppercase italic">Hubli Quest</h1>
@@ -271,19 +269,17 @@
                         </button>
                     </header>
 
-                    {/* Simple Search */}
                     <div className="relative group">
                         <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-500 transition-colors"></i>
                         <input 
                             type="text" 
-                            placeholder="Search cities or monuments..." 
+                            placeholder="Cari kota atau monumen..." 
                             className="w-full search-bar rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all text-slate-200"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
 
-                    {/* Progress Bar */}
                     <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
                         <div 
                             className="h-full bg-indigo-500 transition-all duration-700 ease-out"
@@ -291,7 +287,6 @@
                         ></div>
                     </div>
 
-                    {/* Spot List */}
                     <main className="space-y-10">
                         {filteredData.map((group, gIdx) => (
                             <section key={group.city} className="space-y-4 animate-fade-in" style={{ animationDelay: `${gIdx * 0.05}s` }}>
@@ -352,29 +347,27 @@
                         ))}
                     </main>
 
-                    {/* Navigation Footer */}
                     <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-slate-900/80 backdrop-blur-xl border border-white/5 py-4 px-10 rounded-full flex justify-between items-center shadow-2xl z-50">
                         <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex flex-col items-center gap-1 text-indigo-500">
                             <i className="fas fa-home text-lg"></i>
-                            <span className="text-[8px] font-bold uppercase tracking-widest">Home</span>
+                            <span className="text-[8px] font-bold uppercase tracking-widest">Beranda</span>
                         </button>
                         <button 
                             onClick={() => {
                                 const next = TRAVEL_DATA.flatMap(g => g.spots).find(s => !visited.includes(s.name));
                                 if (next) {
                                     setSearchQuery(next.name);
-                                    // Give it a moment to filter then scroll
                                     setTimeout(() => window.scrollTo({top: 0, behavior: 'smooth'}), 100);
                                 }
                             }}
                             className="flex flex-col items-center gap-1 text-slate-500"
                         >
                             <i className="fas fa-search text-lg"></i>
-                            <span className="text-[8px] font-bold uppercase tracking-widest">Search</span>
+                            <span className="text-[8px] font-bold uppercase tracking-widest">Cari</span>
                         </button>
                         <button 
                             onClick={() => {
-                                if(confirm("Reset all visit history?")) {
+                                if(confirm("Hapus semua riwayat kunjungan?")) {
                                     setVisited([]);
                                     localStorage.removeItem('visited_spots');
                                 }
@@ -382,7 +375,7 @@
                             className="flex flex-col items-center gap-1 text-red-500/40"
                         >
                             <i className="fas fa-rotate-left text-lg"></i>
-                            <span className="text-[8px] font-bold uppercase tracking-widest">Reset</span>
+                            <span className="text-[8px] font-bold uppercase tracking-widest">Atur Ulang</span>
                         </button>
                     </nav>
                 </div>
