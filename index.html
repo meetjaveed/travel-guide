@@ -3,354 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hubli Pilgrimage Tracker</title>
+    <title>Travel Quest 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-        .progress-bar { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
-        .spot-card.checked { background-color: #f0fdf4; border-color: #bbf7d0; }
-        .spot-card.checked h4 { text-decoration: line-through; color: #166534; opacity: 0.6; }
-        @keyframes pulse-ring {
-            0% { transform: scale(.33); }
-            80%, 100% { opacity: 0; }
+        .progress-bar { transition: width 0.8s ease-in-out; }
+        .spot-card.checked { background-color: #f8fafc; border-color: #e2e8f0; opacity: 0.7; }
+        .spot-card.checked h4 { text-decoration: line-through; color: #64748b; }
+        .distance-badge { font-variant-numeric: tabular-nums; }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
-        .gps-active::after {
-            content: ''; position: absolute; width: 100%; height: 100%;
-            border: 4px solid #fff; border-radius: 50%;
-            animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-        .phase-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 99px; font-weight: 800; letter-spacing: 0.05em; }
+        .live-dot { animation: pulse-soft 2s infinite; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans pb-32">
+<body class="bg-gray-50 font-sans pb-32">
 
-    <!-- Header & Progress -->
-    <div class="bg-indigo-700 text-white pt-10 pb-14 px-6 rounded-b-[40px] shadow-xl sticky top-0 z-50">
+    <!-- Header Section -->
+    <div class="bg-slate-900 text-white pt-10 pb-16 px-6 rounded-b-[45px] shadow-2xl sticky top-0 z-50">
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-2xl font-black tracking-tighter">HUBLI QUEST 2026</h1>
-                <p class="text-indigo-200 text-xs font-bold uppercase tracking-widest">Spiritual & Heritage Tracker</p>
+                <h1 class="text-2xl font-black tracking-tighter italic">TRAVEL QUEST</h1>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-400 rounded-full live-dot"></span>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Live GPS Tracking Active</p>
+                </div>
             </div>
-            <button onclick="checkIn()" id="gps-btn" class="relative bg-white text-indigo-700 w-14 h-14 rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-transform">
-                <i class="fas fa-location-crosshairs fa-xl"></i>
+            <button onclick="requestLocationUpdate()" id="gps-btn" class="bg-indigo-600 text-white w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-transform">
+                <i class="fas fa-location-arrow"></i>
             </button>
         </div>
 
-        <div class="space-y-2">
+        <div class="space-y-3">
             <div class="flex justify-between items-end">
-                <span id="stat-text" class="text-[10px] font-black text-indigo-100 uppercase tracking-wider">0 / 0 COMPLETED</span>
-                <span id="percent-text" class="text-2xl font-black text-white">0%</span>
+                <span id="stat-text" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">0 / 20 SPOTS VISITED</span>
+                <span id="percent-text" class="text-3xl font-black text-white">0%</span>
             </div>
-            <div class="h-3 bg-indigo-900/30 rounded-full overflow-hidden border border-indigo-400/20">
-                <div id="progress-fill" class="progress-bar h-full bg-green-400 w-0"></div>
+            <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="progress-fill" class="progress-bar h-full bg-indigo-500 w-0"></div>
             </div>
         </div>
     </div>
 
-    <!-- Status Box -->
-    <div id="status-box" class="mx-6 -mt-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 hidden z-[60] relative">
-        <p id="status-msg" class="text-center text-sm font-bold text-slate-700"></p>
+    <!-- Alert Box -->
+    <div id="status-box" class="mx-6 -mt-8 bg-white p-4 rounded-3xl shadow-xl border border-slate-100 hidden z-50 relative">
+        <p id="status-msg" class="text-center text-xs font-bold text-slate-600"></p>
     </div>
 
-    <!-- Itinerary Content -->
-    <div id="task-list" class="px-5 mt-8 space-y-10">
-        <!-- Content injected by JS -->
+    <!-- Continuous Task List -->
+    <div id="task-list" class="px-5 mt-10 space-y-6">
+        <!-- JS generates spots here -->
     </div>
 
-    <!-- Quick Navigation Footer -->
-    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900/95 backdrop-blur-md text-white py-4 px-6 rounded-full shadow-2xl flex justify-between items-center z-50 border border-white/10">
-        <button onclick="window.scrollTo(0,0)" class="flex flex-col items-center gap-1">
-            <i class="fas fa-arrow-up text-lg"></i>
-            <span class="text-[8px] font-black uppercase">Top</span>
+    <!-- Sticky Bottom Navigation -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-white border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-4 px-10 rounded-full flex justify-between items-center z-50">
+        <button onclick="window.scrollTo(0,0)" class="flex flex-col items-center gap-1 text-indigo-600">
+            <i class="fas fa-list-ul text-lg"></i>
+            <span class="text-[9px] font-black uppercase tracking-tighter">Itinerary</span>
         </button>
-        <button onclick="scrollToNext()" class="bg-indigo-600 px-6 py-2 rounded-full flex items-center gap-2">
-            <i class="fas fa-forward-step text-sm"></i>
-            <span class="text-[10px] font-black uppercase">Next Spot</span>
+        <button onclick="scrollToNextSpot()" class="flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-bullseye text-lg"></i>
+            <span class="text-[9px] font-black uppercase tracking-tighter">Next Spot</span>
         </button>
-        <button onclick="resetAll()" class="flex flex-col items-center gap-1 text-red-400">
-            <i class="fas fa-trash-can text-lg"></i>
-            <span class="text-[8px] font-black uppercase">Reset</span>
+        <button onclick="resetAllData()" class="flex flex-col items-center gap-1 text-red-400">
+            <i class="fas fa-trash-alt text-lg"></i>
+            <span class="text-[9px] font-black uppercase tracking-tighter">Clear</span>
         </button>
     </div>
 
     <script>
-        const TRIP_DATA = [
-            {
-                phase: "Phase 1: Uttar Pradesh",
-                color: "bg-orange-500",
-                cities: [
-                    {
-                        name: "Agra",
-                        spots: [
-                            { name: "Taj Mahal", type: "Monuments", lat: 27.1751, lng: 78.0421 },
-                            { name: "Agra Fort", type: "Monuments", lat: 27.1795, lng: 78.0211 },
-                            { name: "Itmad-ud-Daulah (Baby Taj)", type: "Monuments", lat: 27.1929, lng: 78.0322 },
-                            { name: "Jama Masjid (Agra)", type: "Masjids", lat: 27.1858, lng: 78.0163 },
-                            { name: "Moti Masjid (Inside Fort)", type: "Masjids", lat: 27.1800, lng: 78.0220 },
-                            { name: "Mehtab Bagh", type: "Gardens", lat: 27.1793, lng: 78.0421 },
-                            { name: "Ram Bagh", type: "Gardens", lat: 27.2064, lng: 78.0400 }
-                        ]
-                    },
-                    {
-                        name: "Lucknow",
-                        spots: [
-                            { name: "Bara Imambara", type: "Heritage", lat: 26.8689, lng: 80.9135 },
-                            { name: "Chhota Imambara", type: "Heritage", lat: 26.8785, lng: 80.9050 },
-                            { name: "Rumi Darwaza", type: "Heritage", lat: 26.8684, lng: 80.9122 },
-                            { name: "The Residency", type: "Heritage", lat: 26.8600, lng: 80.9270 },
-                            { name: "Ambedkar Memorial Park", type: "Parks", lat: 26.8450, lng: 80.9750 },
-                            { name: "Janeshwar Mishra Park", type: "Parks", lat: 26.8350, lng: 81.0000 },
-                            { name: "Dargah Dada Miyan", type: "Dargahs", lat: 26.8521, lng: 80.9322 },
-                            { name: "Shah Mina Shah Mazar", type: "Dargahs", lat: 26.8660, lng: 80.9180 }
-                        ]
-                    },
-                    {
-                        name: "Bahraich",
-                        spots: [
-                            { name: "Dargah Syed Salar Masood Ghazi", type: "Spiritual", lat: 27.5855, lng: 81.6033 },
-                            { name: "Maneejri Masjid", type: "Masjids", lat: 27.5750, lng: 81.5950 },
-                            { name: "Jama Masjid Bahraich", type: "Masjids", lat: 27.5700, lng: 81.6000 }
-                        ]
-                    },
-                    {
-                        name: "Kanpur / Makanpur",
-                        spots: [
-                            { name: "Dargah Hazrat Zinda Shah Madar", type: "Spiritual", lat: 26.8373, lng: 80.0465 },
-                            { name: "Kanpur Memorial Church", type: "History", lat: 26.4520, lng: 80.3540 },
-                            { name: "JK Temple", type: "History", lat: 26.4750, lng: 80.3060 },
-                            { name: "Allen Forest Zoo", type: "Gardens", lat: 26.5050, lng: 80.3050 },
-                            { name: "Nana Rao Park", type: "Gardens", lat: 26.4730, lng: 80.3550 }
-                        ]
-                    },
-                    {
-                        name: "Kichocha (Akbarpur)",
-                        spots: [
-                            { name: "Dargah Makhdoom Ashraf Semnani", type: "Spiritual", lat: 26.4258, lng: 82.7569 }
-                        ]
-                    },
-                    {
-                        name: "Bareilly",
-                        spots: [
-                            { name: "Dargah-e-Ala Hazrat", type: "Spiritual", lat: 28.3751, lng: 79.4144 },
-                            { name: "Dargah Shah Sharafat Ali Mia", type: "Spiritual", lat: 28.3650, lng: 79.4100 },
-                            { name: "Phool Bagh", type: "Gardens", lat: 28.3550, lng: 79.4200 },
-                            { name: "Akshar Vihar", type: "Gardens", lat: 28.3600, lng: 79.4300 }
-                        ]
-                    }
-                ]
-            },
-            {
-                phase: "Phase 2: Northern Belt",
-                color: "bg-emerald-500",
-                cities: [
-                    {
-                        name: "Haridwar / Roorkee",
-                        spots: [
-                            { name: "Piran Kaliyar Sharif", type: "Spiritual", lat: 29.9161, lng: 77.9351 },
-                            { name: "Har Ki Pauri (Ganga Aarti)", type: "Ghats", lat: 29.9560, lng: 78.1700 }
-                        ]
-                    },
-                    {
-                        name: "Sadhaura (near Ambala)",
-                        spots: [
-                            { name: "Dargah Shah Qumais", type: "History", lat: 30.3792, lng: 77.2025 }
-                        ]
-                    },
-                    {
-                        name: "Panipat",
-                        spots: [
-                            { name: "Kala Amb Memorial", type: "History", lat: 29.3550, lng: 77.0100 },
-                            { name: "Panipat Museum", type: "History", lat: 29.3950, lng: 76.9650 },
-                            { name: "Dargah Bu Ali Shah Qalandar", type: "Spiritual", lat: 29.3909, lng: 76.9744 },
-                            { name: "Ibrahim Lodhi’s Tomb", type: "Spiritual", lat: 29.3980, lng: 76.9680 }
-                        ]
-                    },
-                    {
-                        name: "Delhi",
-                        spots: [
-                            { name: "Red Fort", type: "Heritage", lat: 28.6562, lng: 77.2410 },
-                            { name: "Humayun’s Tomb", type: "Heritage", lat: 28.5933, lng: 77.2507 },
-                            { name: "Qutub Minar", type: "Heritage", lat: 28.5244, lng: 77.1855 },
-                            { name: "Jama Masjid Delhi", type: "Spiritual", lat: 28.6507, lng: 77.2334 },
-                            { name: "Nizamuddin Dargah", type: "Spiritual", lat: 28.5913, lng: 77.2425 },
-                            { name: "Lotus Temple", type: "Spiritual", lat: 28.5535, lng: 77.2588 },
-                            { name: "Lodhi Gardens", type: "Gardens", lat: 28.5930, lng: 77.2190 },
-                            { name: "Garden of Five Senses", type: "Gardens", lat: 28.5130, lng: 77.1970 }
-                        ]
-                    }
-                ]
-            },
-            {
-                phase: "Phase 3: Rajasthan",
-                color: "bg-yellow-500",
-                cities: [
-                    {
-                        name: "Ajmer Sharif",
-                        spots: [
-                            { name: "Ajmer Sharif Dargah", type: "Spiritual", lat: 26.4561, lng: 74.6284 },
-                            { name: "Taragarh Fort", type: "Spiritual", lat: 26.4468, lng: 74.6189 },
-                            { name: "Adhai Din Ka Jhopda", type: "Architecture", lat: 26.4552, lng: 74.6251 },
-                            { name: "Ana Sagar / Daulat Bagh", type: "Nature", lat: 26.4741, lng: 74.6258 }
-                        ]
-                    },
-                    {
-                        name: "Salwar Sharif",
-                        spots: [
-                            { name: "Dargah Khwaja Fakhruddin Chishti", type: "Spiritual", lat: 26.2300, lng: 75.0500 }
-                        ]
-                    },
-                    {
-                        name: "Pushkar",
-                        spots: [
-                            { name: "Brahma Temple", type: "Temples", lat: 26.4890, lng: 74.5550 },
-                            { name: "Pushkar Lake Ghats", type: "Temples", lat: 26.4883, lng: 74.5518 }
-                        ]
-                    }
-                ]
-            },
-            {
-                phase: "Phase 4: Return Hubli",
-                color: "bg-indigo-500",
-                cities: [
-                    {
-                        name: "Hubli (Home)",
-                        spots: [
-                            { name: "Unkal Lake", type: "Attractions", lat: 15.3850, lng: 75.1250 },
-                            { name: "Chandramouleshwara Temple", type: "Attractions", lat: 15.3750, lng: 75.1300 },
-                            { name: "Nrupatunga Betta", type: "Attractions", lat: 15.3500, lng: 75.1100 }
-                        ]
-                    }
-                ]
-            }
+        const SPOTS = [
+            { id: 1, name: "Taj Mahal", city: "Agra", lat: 27.1751, lng: 78.0421, desc: "A UNESCO World Heritage site and the most famous symbol of Mughal architecture built by Emperor Shah Jahan." },
+            { id: 2, name: "Agra Fort", city: "Agra", lat: 27.1795, lng: 78.0211, desc: "A massive 16th-century red sandstone fortress that served as the main residence for the Mughal Emperors." },
+            { id: 3, name: "Jama Masjid Agra", city: "Agra", lat: 27.1858, lng: 78.0163, desc: "One of the largest mosques in India, built by Princess Jahanara Begum, daughter of Shah Jahan." },
+            { id: 4, name: "Bara Imambara", city: "Lucknow", lat: 26.8689, lng: 80.9135, desc: "Famous for its unique 'Bhulbhulaiya' (labyrinth) and its grand arched hall built without any pillars." },
+            { id: 5, name: "Dargah Dada Miyan", city: "Lucknow", lat: 26.8521, lng: 80.9322, desc: "A revered Sufi shrine of Hazrat Shah Meena Shah, also known as Dada Miyan, in the heart of Lucknow." },
+            { id: 6, name: "Dargah Syed Salar Masood Ghazi", city: "Bahraich", lat: 27.5855, lng: 81.6033, desc: "The shrine of the 11th-century warrior saint, visited by people of all faiths for its spiritual significance." },
+            { id: 7, name: "Dargah Hazrat Zinda Shah Madar", city: "Makanpur", lat: 26.8373, lng: 80.0465, desc: "The shrine of the founder of the Madariyya Sufi order, known for being one of the oldest Sufi centers in India." },
+            { id: 8, name: "Dargah Makhdoom Ashraf Semnani", city: "Kichocha", lat: 26.4258, lng: 82.7569, desc: "A world-famous shrine known for the healing properties of its pond (Neer) and spiritual tranquility." },
+            { id: 9, name: "Dargah-e-Ala Hazrat", city: "Bareilly", lat: 28.3751, lng: 79.4144, desc: "Resting place of Imam Ahmed Raza Khan, a 19th-century polymath, jurist, and reformer." },
+            { id: 10, name: "Sabir Pak Dargah", city: "Piran Kaliyar", lat: 29.9161, lng: 77.9351, desc: "The shrine of the 13th-century saint Alauddin Ali Ahmed Sabir Kaliyari, famous for its powerful spiritual aura." },
+            { id: 11, name: "Dargah Shah Qumais", city: "Sadhaura", lat: 30.3792, lng: 77.2025, desc: "A historical shrine of Shah Qumais Qadri, a prominent Sufi saint of the Qadiriya order." },
+            { id: 12, name: "Dargah Bu Ali Shah Qalandar", city: "Panipat", lat: 29.3909, lng: 76.9744, desc: "Shrine of the 13th-century Sufi saint from Azerbaijan who settled in Panipat and became a great spiritual leader." },
+            { id: 13, name: "Nizamuddin Dargah", city: "Delhi", lat: 28.5913, lng: 77.2425, desc: "The world-renowned shrine of the Sufi saint Nizamuddin Auliya, famous for its evening Qawwalis." },
+            { id: 14, name: "Jama Masjid Delhi", city: "Delhi", lat: 28.6507, lng: 77.2334, desc: "One of the largest mosques in India, built by Shah Jahan between 1644 and 1656." },
+            { id: 15, name: "Ajmer Sharif Dargah", city: "Ajmer", lat: 26.4561, lng: 74.6284, desc: "The revered shrine of Hazrat Khwaja Moinuddin Chishti, the founder of the Chishtiya order in South Asia." },
+            { id: 16, name: "Taragarh Fort", city: "Ajmer", lat: 26.4468, lng: 74.6189, desc: "A hill fort built on a steep slope, offering panoramic views of the Ajmer city and the Dargah." },
+            { id: 17, name: "Adhai Din Ka Jhopda", city: "Ajmer", lat: 26.4552, lng: 74.6251, desc: "An early Indo-Islamic architectural marvel, it was built by Qutb-ud-Din-Aibak in just two and a half days." },
+            { id: 18, name: "Ana Sagar Lake", city: "Ajmer", lat: 26.4741, lng: 74.6258, desc: "A large artificial lake surrounded by beautiful gardens (Daulat Bagh) and marble pavilions (Baradari)." },
+            { id: 19, name: "Pushkar Lake", city: "Pushkar", lat: 26.4883, lng: 74.5518, desc: "A sacred lake with 52 ghats, believed to have been created by Lord Brahma, located 14km from Ajmer." }
         ];
 
-        let visited = JSON.parse(localStorage.getItem('trip_v2026') || '[]');
+        let visited = JSON.parse(localStorage.getItem('hubli_tour_final') || '[]');
+        let userPos = null;
 
         function init() {
             const list = document.getElementById('task-list');
             list.innerHTML = '';
-            
-            TRIP_DATA.forEach(phase => {
-                const phaseSection = document.createElement('div');
-                phaseSection.innerHTML = `
-                    <div class="mb-6">
-                        <span class="phase-badge text-white ${phase.color}">${phase.phase}</span>
+
+            SPOTS.forEach(spot => {
+                const isChecked = visited.includes(spot.id);
+                const spotDiv = document.createElement('div');
+                spotDiv.id = `spot-${spot.id}`;
+                spotDiv.className = `spot-card ${isChecked ? 'checked' : 'bg-white'} rounded-[32px] p-6 shadow-sm border border-slate-100 transition-all duration-500`;
+                
+                spotDiv.innerHTML = `
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[9px] font-black uppercase text-indigo-500 tracking-tighter">${spot.city}</span>
+                                <span id="dist-${spot.id}" class="distance-badge text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md">calculating distance...</span>
+                            </div>
+                            <h4 class="font-black text-slate-800 text-lg leading-tight mb-2">${spot.name}</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-4">${spot.desc}</p>
+                            
+                            <div class="flex gap-2">
+                                <button onclick="toggleVisited(${spot.id})" class="flex-1 py-3 rounded-2xl bg-slate-100 text-slate-600 font-bold text-[10px] uppercase tracking-widest active:bg-indigo-600 active:text-white transition-all">
+                                    ${isChecked ? '<i class="fas fa-check-circle mr-1"></i> Visited' : 'Mark Visited'}
+                                </button>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}" target="_blank" class="w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 active:bg-indigo-600 active:text-white">
+                                    <i class="fas fa-map-marked-alt text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 `;
-                
-                phase.cities.forEach(city => {
-                    const cityGroup = document.createElement('div');
-                    cityGroup.className = "mb-8";
-                    cityGroup.innerHTML = `
-                        <div class="flex items-center gap-2 mb-4">
-                            <h2 class="text-sm font-black text-slate-400 uppercase tracking-tighter">${city.name}</h2>
-                            <div class="h-[1px] bg-slate-200 flex-1"></div>
-                        </div>
-                        <div class="space-y-3">
-                            ${city.spots.map(spot => {
-                                const isDone = visited.includes(spot.name);
-                                return `
-                                    <div id="item-${spot.name.replace(/\s/g, '')}" class="spot-card ${isDone ? 'checked' : 'bg-white'} p-4 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between transition-all">
-                                        <div class="flex items-center gap-4">
-                                            <button onclick="toggleSpot('${spot.name}')" class="text-2xl">
-                                                <i class="fas ${isDone ? 'fa-circle-check text-green-500' : 'fa-circle text-slate-100'}"></i>
-                                            </button>
-                                            <div>
-                                                <h4 class="font-bold text-slate-800 text-sm leading-tight">${spot.name}</h4>
-                                                <p class="text-[9px] font-black uppercase text-indigo-500 mt-0.5 tracking-tight">${spot.type}</p>
-                                            </div>
-                                        </div>
-                                        <a href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}" target="_blank" class="w-10 h-10 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 active:bg-indigo-600 active:text-white transition-colors">
-                                            <i class="fas fa-diamond-turn-right text-xs"></i>
-                                        </a>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    `;
-                    phaseSection.appendChild(cityGroup);
-                });
-                list.appendChild(phaseSection);
+                list.appendChild(spotDiv);
             });
             updateStats();
+            startTracking();
         }
 
-        function toggleSpot(name) {
-            visited = visited.includes(name) ? visited.filter(n => n !== name) : [...visited, name];
-            localStorage.setItem('trip_v2026', JSON.stringify(visited));
+        function toggleVisited(id) {
+            if (visited.includes(id)) {
+                visited = visited.filter(v => v !== id);
+            } else {
+                visited.push(id);
+                showStatus(`Checked in: ${SPOTS.find(s => s.id === id).name}`);
+            }
+            localStorage.setItem('hubli_tour_final', JSON.stringify(visited));
             init();
         }
 
         function updateStats() {
-            const total = TRIP_DATA.reduce((acc, p) => acc + p.cities.reduce((cAcc, c) => cAcc + c.spots.length, 0), 0);
+            const total = SPOTS.length;
             const count = visited.length;
-            const percent = Math.round((count / total) * 100);
+            const pct = Math.round((count / total) * 100);
             
             document.getElementById('stat-text').innerText = `${count} / ${total} SPOTS VISITED`;
-            document.getElementById('percent-text').innerText = `${percent}%`;
-            document.getElementById('progress-fill').style.width = `${percent}%`;
+            document.getElementById('percent-text').innerText = `${pct}%`;
+            document.getElementById('progress-fill').style.width = `${pct}%`;
         }
 
-        function checkIn() {
-            const btn = document.getElementById('gps-btn');
-            if (!navigator.geolocation) return alert("GPS not available");
-            
-            btn.classList.add('gps-active');
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const { latitude, longitude } = pos.coords;
-                let found = false;
-                
-                TRIP_DATA.forEach(p => p.cities.forEach(c => c.spots.forEach(s => {
-                    if (!visited.includes(s.name) && getDist(latitude, longitude, s.lat, s.lng) < 1.5) {
-                        visited.push(s.name);
-                        found = true;
+        function showStatus(msg) {
+            const box = document.getElementById('status-box');
+            const txt = document.getElementById('status-msg');
+            box.classList.remove('hidden');
+            txt.innerText = msg;
+            setTimeout(() => box.classList.add('hidden'), 3500);
+        }
+
+        function startTracking() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.watchPosition(
+                (pos) => {
+                    userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    updateAllDistances();
+                },
+                (err) => console.warn("GPS Error", err),
+                { enableHighAccuracy: true }
+            );
+        }
+
+        function updateAllDistances() {
+            if (!userPos) return;
+            SPOTS.forEach(spot => {
+                const distKm = getDistance(userPos.lat, userPos.lng, spot.lat, spot.lng);
+                const badge = document.getElementById(`dist-${spot.id}`);
+                if (badge) {
+                    if (distKm < 1) {
+                        badge.innerText = `${Math.round(distKm * 1000)}m away`;
+                        badge.classList.replace('text-slate-400', 'text-green-600');
+                        // Auto-check in logic
+                        if (distKm < 0.8 && !visited.includes(spot.id)) {
+                             toggleVisited(spot.id);
+                        }
+                    } else {
+                        badge.innerText = `${distKm.toFixed(1)} km away`;
+                        badge.classList.replace('text-green-600', 'text-slate-400');
                     }
-                })));
-                
-                if(found) {
-                    localStorage.setItem('trip_v2026', JSON.stringify(visited));
-                    init();
-                    showMsg("Check-in successful!", "success");
-                } else {
-                    showMsg("No nearby spots found.", "info");
                 }
-                btn.classList.remove('gps-active');
-            }, () => {
-                showMsg("Location denied.", "error");
-                btn.classList.remove('gps-active');
             });
         }
 
-        function getDist(la1, lo1, la2, lo2) {
-            const R = 6371;
-            const dLat = (la2-la1)*Math.PI/180;
-            const dLon = (lo2-lo1)*Math.PI/180;
-            const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
-            return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        function showMsg(m, t) {
-            const b = document.getElementById('status-box');
-            b.classList.remove('hidden');
-            document.getElementById('status-msg').innerText = m;
-            setTimeout(() => b.classList.add('hidden'), 3000);
+        function requestLocationUpdate() {
+            showStatus("Refreshing your live location...");
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    updateAllDistances();
+                    showStatus("Location Updated");
+                });
+            }
         }
 
-        function scrollToNext() {
-            const allSpots = [];
-            TRIP_DATA.forEach(p => p.cities.forEach(c => c.spots.forEach(s => allSpots.push(s))));
-            const next = allSpots.find(s => !visited.includes(s.name));
-            if(next) {
-                const el = document.getElementById(`item-${next.name.replace(/\s/g, '')}`);
+        function scrollToNextSpot() {
+            const next = SPOTS.find(s => !visited.includes(s.id));
+            if (next) {
+                const el = document.getElementById(`spot-${next.id}`);
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 el.classList.add('ring-4', 'ring-indigo-100');
                 setTimeout(() => el.classList.remove('ring-4', 'ring-indigo-100'), 2000);
             }
         }
 
-        function resetAll() {
-            if(confirm("Erase history?")) { visited = []; localStorage.removeItem('trip_v2026'); init(); }
+        function resetAllData() {
+            if (confirm("Reset all visit data?")) {
+                visited = [];
+                localStorage.removeItem('hubli_tour_final');
+                init();
+            }
         }
 
         window.onload = init;
