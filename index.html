@@ -9,216 +9,280 @@
     <style>
         body { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
         .progress-bar { transition: width 0.8s ease-in-out; }
-        .spot-card.checked { background-color: #f8fafc; border-color: #e2e8f0; opacity: 0.7; }
-        .spot-card.checked h4 { text-decoration: line-through; color: #64748b; }
-        .distance-badge { font-variant-numeric: tabular-nums; }
-        @keyframes pulse-soft {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        .spot-card.checked { background-color: #f0fdf4; border-color: #bbf7d0; opacity: 0.8; }
+        .spot-card.checked h4 { text-decoration: line-through; color: #166534; }
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
         }
-        .live-dot { animation: pulse-soft 2s infinite; }
+        .gps-loading { animation: pulse-dot 1s infinite; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans pb-32">
+<body class="bg-slate-50 font-sans pb-32">
 
     <!-- Header Section -->
-    <div class="bg-slate-900 text-white pt-10 pb-16 px-6 rounded-b-[45px] shadow-2xl sticky top-0 z-50">
+    <div class="bg-indigo-700 text-white pt-10 pb-16 px-6 rounded-b-[40px] shadow-2xl sticky top-0 z-50">
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-2xl font-black tracking-tighter italic">TRAVEL QUEST</h1>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-green-400 rounded-full live-dot"></span>
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Live GPS Tracking Active</p>
-                </div>
+                <p class="text-indigo-200 text-[10px] font-bold uppercase tracking-widest">March 2026 Itinerary</p>
             </div>
-            <button onclick="requestLocationUpdate()" id="gps-btn" class="bg-indigo-600 text-white w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-transform">
-                <i class="fas fa-location-arrow"></i>
+            <button onclick="initiateGPS()" id="gps-btn" class="bg-white text-indigo-700 w-14 h-14 rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-all border-4 border-indigo-400">
+                <i id="gps-icon" class="fas fa-location-dot"></i>
             </button>
         </div>
 
         <div class="space-y-3">
             <div class="flex justify-between items-end">
-                <span id="stat-text" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">0 / 20 SPOTS VISITED</span>
+                <span id="stat-text" class="text-[10px] font-black text-indigo-100 uppercase tracking-widest">0 / 0 VISITED</span>
                 <span id="percent-text" class="text-3xl font-black text-white">0%</span>
             </div>
-            <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div id="progress-fill" class="progress-bar h-full bg-indigo-500 w-0"></div>
+            <div class="h-2 bg-indigo-900/30 rounded-full overflow-hidden">
+                <div id="progress-fill" class="progress-bar h-full bg-green-400 w-0"></div>
             </div>
         </div>
     </div>
 
-    <!-- Alert Box -->
-    <div id="status-box" class="mx-6 -mt-8 bg-white p-4 rounded-3xl shadow-xl border border-slate-100 hidden z-50 relative">
-        <p id="status-msg" class="text-center text-xs font-bold text-slate-600"></p>
+    <!-- Live Status Banner -->
+    <div id="status-banner" class="mx-6 -mt-8 bg-white p-4 rounded-3xl shadow-xl border border-indigo-50 hidden z-50 relative">
+        <p id="status-msg" class="text-center text-xs font-bold text-indigo-600 flex items-center justify-center gap-2">
+            <i class="fas fa-satellite-dish animate-pulse"></i>
+            Calculating live distances...
+        </p>
     </div>
 
-    <!-- Continuous Task List -->
-    <div id="task-list" class="px-5 mt-10 space-y-6">
-        <!-- JS generates spots here -->
+    <!-- Categorized Task List -->
+    <div id="itinerary-container" class="px-5 mt-10 space-y-10">
+        <!-- JS will inject cities and spots here -->
     </div>
 
-    <!-- Sticky Bottom Navigation -->
-    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-white border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-4 px-10 rounded-full flex justify-between items-center z-50">
+    <!-- Bottom Controls -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-white border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.2)] py-4 px-10 rounded-full flex justify-between items-center z-50">
         <button onclick="window.scrollTo(0,0)" class="flex flex-col items-center gap-1 text-indigo-600">
-            <i class="fas fa-list-ul text-lg"></i>
-            <span class="text-[9px] font-black uppercase tracking-tighter">Itinerary</span>
+            <i class="fas fa-house-user text-lg"></i>
+            <span class="text-[9px] font-black uppercase">Home</span>
         </button>
-        <button onclick="scrollToNextSpot()" class="flex flex-col items-center gap-1 text-slate-400">
-            <i class="fas fa-bullseye text-lg"></i>
-            <span class="text-[9px] font-black uppercase tracking-tighter">Next Spot</span>
+        <button onclick="scrollToCurrent()" class="flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-map-pin text-lg"></i>
+            <span class="text-[9px] font-black uppercase">Next Up</span>
         </button>
-        <button onclick="resetAllData()" class="flex flex-col items-center gap-1 text-red-400">
-            <i class="fas fa-trash-alt text-lg"></i>
-            <span class="text-[9px] font-black uppercase tracking-tighter">Clear</span>
+        <button onclick="clearHistory()" class="flex flex-col items-center gap-1 text-red-300">
+            <i class="fas fa-trash-can text-lg"></i>
+            <span class="text-[9px] font-black uppercase">Reset</span>
         </button>
     </div>
 
     <script>
-        const SPOTS = [
-            { id: 1, name: "Taj Mahal", city: "Agra", lat: 27.1751, lng: 78.0421, desc: "A UNESCO World Heritage site and the most famous symbol of Mughal architecture built by Emperor Shah Jahan." },
-            { id: 2, name: "Agra Fort", city: "Agra", lat: 27.1795, lng: 78.0211, desc: "A massive 16th-century red sandstone fortress that served as the main residence for the Mughal Emperors." },
-            { id: 3, name: "Jama Masjid Agra", city: "Agra", lat: 27.1858, lng: 78.0163, desc: "One of the largest mosques in India, built by Princess Jahanara Begum, daughter of Shah Jahan." },
-            { id: 4, name: "Bara Imambara", city: "Lucknow", lat: 26.8689, lng: 80.9135, desc: "Famous for its unique 'Bhulbhulaiya' (labyrinth) and its grand arched hall built without any pillars." },
-            { id: 5, name: "Dargah Dada Miyan", city: "Lucknow", lat: 26.8521, lng: 80.9322, desc: "A revered Sufi shrine of Hazrat Shah Meena Shah, also known as Dada Miyan, in the heart of Lucknow." },
-            { id: 6, name: "Dargah Syed Salar Masood Ghazi", city: "Bahraich", lat: 27.5855, lng: 81.6033, desc: "The shrine of the 11th-century warrior saint, visited by people of all faiths for its spiritual significance." },
-            { id: 7, name: "Dargah Hazrat Zinda Shah Madar", city: "Makanpur", lat: 26.8373, lng: 80.0465, desc: "The shrine of the founder of the Madariyya Sufi order, known for being one of the oldest Sufi centers in India." },
-            { id: 8, name: "Dargah Makhdoom Ashraf Semnani", city: "Kichocha", lat: 26.4258, lng: 82.7569, desc: "A world-famous shrine known for the healing properties of its pond (Neer) and spiritual tranquility." },
-            { id: 9, name: "Dargah-e-Ala Hazrat", city: "Bareilly", lat: 28.3751, lng: 79.4144, desc: "Resting place of Imam Ahmed Raza Khan, a 19th-century polymath, jurist, and reformer." },
-            { id: 10, name: "Sabir Pak Dargah", city: "Piran Kaliyar", lat: 29.9161, lng: 77.9351, desc: "The shrine of the 13th-century saint Alauddin Ali Ahmed Sabir Kaliyari, famous for its powerful spiritual aura." },
-            { id: 11, name: "Dargah Shah Qumais", city: "Sadhaura", lat: 30.3792, lng: 77.2025, desc: "A historical shrine of Shah Qumais Qadri, a prominent Sufi saint of the Qadiriya order." },
-            { id: 12, name: "Dargah Bu Ali Shah Qalandar", city: "Panipat", lat: 29.3909, lng: 76.9744, desc: "Shrine of the 13th-century Sufi saint from Azerbaijan who settled in Panipat and became a great spiritual leader." },
-            { id: 13, name: "Nizamuddin Dargah", city: "Delhi", lat: 28.5913, lng: 77.2425, desc: "The world-renowned shrine of the Sufi saint Nizamuddin Auliya, famous for its evening Qawwalis." },
-            { id: 14, name: "Jama Masjid Delhi", city: "Delhi", lat: 28.6507, lng: 77.2334, desc: "One of the largest mosques in India, built by Shah Jahan between 1644 and 1656." },
-            { id: 15, name: "Ajmer Sharif Dargah", city: "Ajmer", lat: 26.4561, lng: 74.6284, desc: "The revered shrine of Hazrat Khwaja Moinuddin Chishti, the founder of the Chishtiya order in South Asia." },
-            { id: 16, name: "Taragarh Fort", city: "Ajmer", lat: 26.4468, lng: 74.6189, desc: "A hill fort built on a steep slope, offering panoramic views of the Ajmer city and the Dargah." },
-            { id: 17, name: "Adhai Din Ka Jhopda", city: "Ajmer", lat: 26.4552, lng: 74.6251, desc: "An early Indo-Islamic architectural marvel, it was built by Qutb-ud-Din-Aibak in just two and a half days." },
-            { id: 18, name: "Ana Sagar Lake", city: "Ajmer", lat: 26.4741, lng: 74.6258, desc: "A large artificial lake surrounded by beautiful gardens (Daulat Bagh) and marble pavilions (Baradari)." },
-            { id: 19, name: "Pushkar Lake", city: "Pushkar", lat: 26.4883, lng: 74.5518, desc: "A sacred lake with 52 ghats, believed to have been created by Lord Brahma, located 14km from Ajmer." }
+        const DATA = [
+            {
+                city: "Agra",
+                spots: [
+                    { id: 1, name: "Taj Mahal", lat: 27.1751, lng: 78.0421, desc: "Iconic white marble mausoleum built by Shah Jahan." },
+                    { id: 2, name: "Agra Fort", lat: 27.1795, lng: 78.0211, desc: "Historic fortress complex and Mughal imperial residence." },
+                    { id: 3, name: "Jama Masjid Agra", lat: 27.1858, lng: 78.0163, desc: "Large 17th-century mosque built by Jahanara Begum." }
+                ]
+            },
+            {
+                city: "Lucknow",
+                spots: [
+                    { id: 4, name: "Bara Imambara", lat: 26.8689, lng: 80.9135, desc: "Heritage shrine known for its incredible labyrinth (Bhulbhulaiya)." },
+                    { id: 5, name: "Dargah Dada Miyan", lat: 26.8521, lng: 80.9322, desc: "The holy shrine of Hazrat Shah Meena Shah." }
+                ]
+            },
+            {
+                city: "Bahraich",
+                spots: [
+                    { id: 6, name: "Dargah Syed Salar Masood Ghazi", lat: 27.5855, lng: 81.6033, desc: "One of the most visited Sufi shrines in North India." }
+                ]
+            },
+            {
+                city: "Makanpur",
+                spots: [
+                    { id: 7, name: "Dargah Zinda Shah Madar", lat: 26.8373, lng: 80.0465, desc: "Ancient spiritual center of the Madariyya Sufi order." }
+                ]
+            },
+            {
+                city: "Kichocha",
+                spots: [
+                    { id: 8, name: "Dargah Makhdoom Ashraf Semnani", lat: 26.4258, lng: 82.7569, desc: "Shrine famous for spiritual healing and its holy pond." }
+                ]
+            },
+            {
+                city: "Bareilly",
+                spots: [
+                    { id: 9, name: "Dargah-e-Ala Hazrat", lat: 28.3751, lng: 79.4144, desc: "Shrine of Imam Ahmed Raza Khan, a great Islamic scholar." }
+                ]
+            },
+            {
+                city: "Piran Kaliyar",
+                spots: [
+                    { id: 10, name: "Sabir Pak Dargah", lat: 29.9161, lng: 77.9351, desc: "Revered shrine of Alauddin Ali Ahmed Sabir Kaliyari." }
+                ]
+            },
+            {
+                city: "Delhi",
+                spots: [
+                    { id: 11, name: "Nizamuddin Dargah", lat: 28.5913, lng: 77.2425, desc: "World famous shrine of Nizamuddin Auliya." },
+                    { id: 12, name: "Jama Masjid Delhi", lat: 28.6507, lng: 77.2334, desc: "India's largest historic mosque built by Shah Jahan." }
+                ]
+            },
+            {
+                city: "Ajmer",
+                spots: [
+                    { id: 13, name: "Ajmer Sharif Dargah", lat: 26.4561, lng: 74.6284, desc: "The holy resting place of Khwaja Moinuddin Chishti." },
+                    { id: 14, name: "Taragarh Fort", lat: 26.4468, lng: 74.6189, desc: "Ancient hill fortress overlooking the city of Ajmer." },
+                    { id: 15, name: "Adhai Din Ka Jhopda", lat: 26.4552, lng: 74.6251, desc: "Indo-Islamic mosque built in just 2.5 days." },
+                    { id: 16, name: "Ana Sagar Lake", lat: 26.4741, lng: 74.6258, desc: "Scenic artificial lake with marble pavilions." },
+                    { id: 17, name: "Pushkar Lake", lat: 26.4883, lng: 74.5518, desc: "Sacred lake and major pilgrimage site 14km from Ajmer." }
+                ]
+            }
         ];
 
-        let visited = JSON.parse(localStorage.getItem('hubli_tour_final') || '[]');
-        let userPos = null;
+        let visited = JSON.parse(localStorage.getItem('hubli_tour_v5') || '[]');
+        let userCoords = null;
+        let isGPSEnabled = false;
 
-        function init() {
-            const list = document.getElementById('task-list');
-            list.innerHTML = '';
+        function render() {
+            const container = document.getElementById('itinerary-container');
+            container.innerHTML = '';
 
-            SPOTS.forEach(spot => {
-                const isChecked = visited.includes(spot.id);
-                const spotDiv = document.createElement('div');
-                spotDiv.id = `spot-${spot.id}`;
-                spotDiv.className = `spot-card ${isChecked ? 'checked' : 'bg-white'} rounded-[32px] p-6 shadow-sm border border-slate-100 transition-all duration-500`;
-                
-                spotDiv.innerHTML = `
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[9px] font-black uppercase text-indigo-500 tracking-tighter">${spot.city}</span>
-                                <span id="dist-${spot.id}" class="distance-badge text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md">calculating distance...</span>
-                            </div>
-                            <h4 class="font-black text-slate-800 text-lg leading-tight mb-2">${spot.name}</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed mb-4">${spot.desc}</p>
-                            
-                            <div class="flex gap-2">
-                                <button onclick="toggleVisited(${spot.id})" class="flex-1 py-3 rounded-2xl bg-slate-100 text-slate-600 font-bold text-[10px] uppercase tracking-widest active:bg-indigo-600 active:text-white transition-all">
-                                    ${isChecked ? '<i class="fas fa-check-circle mr-1"></i> Visited' : 'Mark Visited'}
-                                </button>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}" target="_blank" class="w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 active:bg-indigo-600 active:text-white">
-                                    <i class="fas fa-map-marked-alt text-lg"></i>
-                                </a>
-                            </div>
-                        </div>
+            DATA.forEach(group => {
+                const cityDiv = document.createElement('div');
+                cityDiv.innerHTML = `
+                    <div class="flex items-center gap-3 mb-5 px-1">
+                        <div class="h-6 w-1 bg-indigo-600 rounded-full"></div>
+                        <h2 class="text-xl font-black text-slate-800 uppercase italic tracking-tighter">${group.city}</h2>
+                    </div>
+                    <div class="space-y-4">
+                        ${group.spots.map(spot => {
+                            const isChecked = visited.includes(spot.id);
+                            return `
+                                <div id="spot-${spot.id}" class="spot-card ${isChecked ? 'checked' : 'bg-white'} rounded-[32px] p-6 shadow-sm border border-slate-100 transition-all duration-500">
+                                    <div class="flex justify-between items-start gap-3">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="text-[9px] font-black text-indigo-500 uppercase tracking-widest">${group.city}</span>
+                                                <span id="dist-${spot.id}" class="text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md">
+                                                    ${isGPSEnabled ? 'Calculating...' : 'GPS Offline'}
+                                                </span>
+                                            </div>
+                                            <h4 class="font-black text-slate-800 text-lg leading-tight mb-2">${spot.name}</h4>
+                                            <p class="text-[11px] text-slate-500 leading-relaxed mb-4">${spot.desc}</p>
+                                            
+                                            <div class="flex gap-2">
+                                                <button onclick="toggleSpot(${spot.id})" class="flex-1 py-3 rounded-2xl bg-slate-100 text-slate-600 font-bold text-[10px] uppercase tracking-widest active:bg-indigo-600 active:text-white transition-all">
+                                                    ${isChecked ? '<i class="fas fa-check-circle mr-1"></i> Visited' : 'Mark Done'}
+                                                </button>
+                                                <a href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}" target="_blank" class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 active:bg-indigo-600 active:text-white">
+                                                    <i class="fas fa-location-arrow"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
                 `;
-                list.appendChild(spotDiv);
+                container.appendChild(cityDiv);
             });
             updateStats();
-            startTracking();
         }
 
-        function toggleVisited(id) {
+        function toggleSpot(id) {
             if (visited.includes(id)) {
                 visited = visited.filter(v => v !== id);
             } else {
                 visited.push(id);
-                showStatus(`Checked in: ${SPOTS.find(s => s.id === id).name}`);
             }
-            localStorage.setItem('hubli_tour_final', JSON.stringify(visited));
-            init();
+            localStorage.setItem('hubli_tour_v5', JSON.stringify(visited));
+            render();
+            if (isGPSEnabled) updateDistances();
         }
 
         function updateStats() {
-            const total = SPOTS.length;
+            const total = DATA.reduce((acc, c) => acc + c.spots.length, 0);
             const count = visited.length;
             const pct = Math.round((count / total) * 100);
-            
-            document.getElementById('stat-text').innerText = `${count} / ${total} SPOTS VISITED`;
+            document.getElementById('stat-text').innerText = `${count} / ${total} VISITED`;
             document.getElementById('percent-text').innerText = `${pct}%`;
             document.getElementById('progress-fill').style.width = `${pct}%`;
         }
 
-        function showStatus(msg) {
-            const box = document.getElementById('status-box');
-            const txt = document.getElementById('status-msg');
-            box.classList.remove('hidden');
-            txt.innerText = msg;
-            setTimeout(() => box.classList.add('hidden'), 3500);
-        }
+        function initiateGPS() {
+            const btn = document.getElementById('gps-btn');
+            const icon = document.getElementById('gps-icon');
+            const banner = document.getElementById('status-banner');
 
-        function startTracking() {
-            if (!navigator.geolocation) return;
-            navigator.geolocation.watchPosition(
+            if (!navigator.geolocation) {
+                alert("GPS is not supported on this device.");
+                return;
+            }
+
+            // UI Feedback
+            icon.className = "fas fa-spinner fa-spin";
+            banner.classList.remove('hidden');
+
+            navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                    updateAllDistances();
+                    isGPSEnabled = true;
+                    userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    
+                    // Success state
+                    icon.className = "fas fa-satellite-dish text-green-500 animate-pulse";
+                    btn.classList.add('border-green-400');
+                    
+                    // Start watching for real-time updates
+                    navigator.geolocation.watchPosition(
+                        (watchPos) => {
+                            userCoords = { lat: watchPos.coords.latitude, lng: watchPos.coords.longitude };
+                            updateDistances();
+                        },
+                        (err) => console.warn(err),
+                        { enableHighAccuracy: true }
+                    );
+                    
+                    updateDistances();
+                    render(); // Re-render to update badges
                 },
-                (err) => console.warn("GPS Error", err),
-                { enableHighAccuracy: true }
+                (err) => {
+                    alert("Location permission denied. Please enable GPS for distance tracking.");
+                    icon.className = "fas fa-location-dot";
+                    banner.classList.add('hidden');
+                },
+                { enableHighAccuracy: true, timeout: 5000 }
             );
         }
 
-        function updateAllDistances() {
-            if (!userPos) return;
-            SPOTS.forEach(spot => {
-                const distKm = getDistance(userPos.lat, userPos.lng, spot.lat, spot.lng);
-                const badge = document.getElementById(`dist-${spot.id}`);
-                if (badge) {
-                    if (distKm < 1) {
-                        badge.innerText = `${Math.round(distKm * 1000)}m away`;
-                        badge.classList.replace('text-slate-400', 'text-green-600');
-                        // Auto-check in logic
-                        if (distKm < 0.8 && !visited.includes(spot.id)) {
-                             toggleVisited(spot.id);
+        function updateDistances() {
+            if (!userCoords) return;
+            DATA.forEach(city => {
+                city.spots.forEach(spot => {
+                    const dist = calculateDistance(userCoords.lat, userCoords.lng, spot.lat, spot.lng);
+                    const badge = document.getElementById(`dist-${spot.id}`);
+                    if (badge) {
+                        if (dist < 1) {
+                            badge.innerText = `${Math.round(dist * 1000)}m away`;
+                            badge.className = "text-[9px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md";
+                        } else {
+                            badge.innerText = `${dist.toFixed(1)} km away`;
+                            badge.className = "text-[9px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md";
                         }
-                    } else {
-                        badge.innerText = `${distKm.toFixed(1)} km away`;
-                        badge.classList.replace('text-green-600', 'text-slate-400');
                     }
-                }
+                });
             });
         }
 
-        function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; 
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2) * Math.sin(dLon/2);
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        function requestLocationUpdate() {
-            showStatus("Refreshing your live location...");
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                    updateAllDistances();
-                    showStatus("Location Updated");
-                });
-            }
-        }
-
-        function scrollToNextSpot() {
-            const next = SPOTS.find(s => !visited.includes(s.id));
+        function scrollToCurrent() {
+            const next = DATA.flatMap(c => c.spots).find(s => !visited.includes(s.id));
             if (next) {
                 const el = document.getElementById(`spot-${next.id}`);
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -227,15 +291,15 @@
             }
         }
 
-        function resetAllData() {
+        function clearHistory() {
             if (confirm("Reset all visit data?")) {
                 visited = [];
-                localStorage.removeItem('hubli_tour_final');
-                init();
+                localStorage.removeItem('hubli_tour_v5');
+                render();
             }
         }
 
-        window.onload = init;
+        window.onload = render;
     </script>
 </body>
 </html>
